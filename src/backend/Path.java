@@ -1,6 +1,6 @@
 /*
  * Michael Pu
- * BallPhysics - Path
+ * RobotPathFinder - Path
  * November 2017
  */
 
