@@ -21,6 +21,7 @@ public abstract class Sprite {
 
     protected Sprite(Node node) {
         mNode = node;
+        mPosition = new Coordinate();
         sPane.getChildren().add(mNode);
         sSpriteList.add(this);
     }

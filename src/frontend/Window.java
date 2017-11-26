@@ -7,6 +7,7 @@
 package frontend;
 
 import algorithm.*;
+import backend.Robot;
 import backend.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -17,13 +18,17 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +60,7 @@ public class Window extends Application {
         dialog.initOwner(primaryStage);
         dialog.setTitle("Select a Map");
         dialog.setWidth(500);
+        dialog.setResizable(false);
         dialog.setAlwaysOnTop(true);
 
         VBox dialogRoot = new VBox(10);
@@ -82,7 +88,6 @@ public class Window extends Application {
         Button startSimulationButton = new Button("Start Simulation");
         startSimulationButton.setDisable(true);
         buttons.getChildren().add(startSimulationButton);
-
 
         Text fileText = new Text("No file has been selected.");
         fileText.setWrappingWidth(dialog.getWidth() * 0.9);
@@ -112,17 +117,19 @@ public class Window extends Application {
                 try {
                     outputConsole.appendText("Reading file: " + mapFile.getCanonicalPath());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    outputConsole.appendText(e.toString() + "\nInvalid file. Please select another file");
+                    fileText.setFill(Color.RED);
+                    return;
                 }
 
                 try {
                     maze = loadMap(mapFile);
                 } catch (InvalidMapException e) {
-                    outputConsole.appendText("Invalid map file. Please select another file.");
+                    outputConsole.appendText(e.toString() + "\nInvalid map file. Please select another file.");
                     fileText.setFill(Color.RED);
                     return;
                 } catch (IOException e) {
-                    outputConsole.appendText("Invalid path to map file. Please select another file");
+                    outputConsole.appendText(e.toString() + "\nInvalid path to map file. Please select another file");
                     fileText.setFill(Color.RED);
                     return;
                 }
@@ -136,7 +143,6 @@ public class Window extends Application {
                 if (path == null) {
                     outputConsole.appendText("No path found. Please select another map.");
                     fileText.setFill(Color.RED);
-                    return;
                 } else {
                     double findPathTime = (System.nanoTime()-startFindPath) / 1E6;
                     String findPathString = String.format("%.4f milliseconds", findPathTime);
@@ -175,18 +181,55 @@ public class Window extends Application {
         Scene scene = new Scene(root);
 
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        double minWindowDimension = Math.min(primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight());
-        double newWindowDimension = minWindowDimension * 0.9;
+        double minWindowDimension = Math.min(primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight()) * 0.9;
+        double squareSideLength = minWindowDimension / Math.max(maze.getWidth(), maze.getHeight());
+
+        root.setPrefWidth(squareSideLength * maze.getWidth());
+        root.setPrefHeight(squareSideLength * maze.getHeight());
 
         primaryStage.setTitle("Simulator");
-        primaryStage.setWidth(newWindowDimension);
-        primaryStage.setHeight(newWindowDimension);
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
 
         Sprite.setPane(root);
         Sprite.setSpriteArrayList(allSpriteList);
+
+        for (int col = 0; col < maze.getWidth(); col++) {
+            for (int row = 0; row < maze.getHeight(); row++) {
+
+                Cell curCell = maze.getCell(col, row);
+                Color squareColor = null;
+
+                switch (curCell) {
+                    case GOAL:
+                        squareColor = Color.RED;
+                        break;
+                    case START:
+                        squareColor = Color.GREEN;
+                        break;
+                    case EMPTY:
+                        squareColor = Color.LIGHTGREY;
+                        break;
+                    case WALL:
+                        squareColor = Color.BLUE;
+                }
+
+                Rectangle cellRect = new Rectangle();
+                cellRect.setStroke(Color.BLACK);
+                cellRect.setStrokeWidth(1);
+                cellRect.setX(col * squareSideLength);
+                cellRect.setY(row * squareSideLength);
+                cellRect.setWidth(squareSideLength);
+                cellRect.setHeight(squareSideLength);
+                cellRect.setFill(squareColor);
+
+                root.getChildren().add(cellRect);
+            }
+        }
+
+        ImageView robotImageView = new ImageView();
+        Robot robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength);
 
         prevTime = System.nanoTime();
         AnimationTimer timer = new AnimationTimer() {

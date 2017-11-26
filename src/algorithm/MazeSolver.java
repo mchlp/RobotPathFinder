@@ -32,8 +32,8 @@ public class MazeSolver {
             }
 
             for(Direction direction : Direction.values()) {
-                int newX = curPoint.x + direction.p.x;
-                int newY = curPoint.y + direction.p.y;
+                int newX = curPoint.x + direction.change.x;
+                int newY = curPoint.y + direction.change.y;
                 if(newX < 0 || newY < 0 || newX >= maze.getWidth() || newY >= maze.getHeight())
                     continue;
                 if(parentArray[newX][newY] != null)

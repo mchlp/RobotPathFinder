@@ -12,6 +12,9 @@ public class MazeParser {
 
         Maze maze = null;
 
+        boolean foundStart = false;
+        boolean foundGoal = false;
+
         String[] allData = rawData.trim().split("\n");
 
         for (int row = 0; row < allData.length; row ++ ) {
@@ -23,6 +26,10 @@ public class MazeParser {
 
             for (int col = 0; col < rowData.length; col++) {
 
+                if (rowData.length != maze.getWidth()) {
+                    throw new InvalidMapException("Different number of characters in row " + (row + 1) + ".");
+                }
+
                 Cell curCell;
 
                 switch (rowData[col]) {
@@ -33,13 +40,21 @@ public class MazeParser {
                         curCell = Cell.EMPTY;
                         break;
                     case "R":
+                        if (foundStart) {
+                            throw new InvalidMapException("More than one starting position found.");
+                        }
                         curCell = Cell.START;
+                        foundStart = true;
                         break;
                     case "G":
+                        if (foundGoal) {
+                            throw new InvalidMapException("More than one goal found.");
+                        }
                         curCell = Cell.GOAL;
+                        foundGoal = true;
                         break;
                     default:
-                        throw new InvalidMapException("Invalid cell type.");
+                        throw new InvalidMapException("Invalid character in map.");
                 }
 
                 maze.setCell(col, row, curCell);
@@ -47,7 +62,15 @@ public class MazeParser {
 
         }
 
-        return  maze;
+        if (!foundGoal) {
+            throw new InvalidMapException("Goal not found in map.");
+        }
+
+        if (!foundStart) {
+            throw new InvalidMapException("Start position not found in map.");
+        }
+
+        return maze;
 
     }
 

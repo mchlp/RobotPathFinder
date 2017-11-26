@@ -9,14 +9,16 @@ package algorithm;
 import java.awt.*;
 
 public enum Direction {
-    UP(new Point(0, -1)),
-    DOWN(new Point(0, 1)),
-    LEFT(new Point(-1, 0)),
-    RIGHT(new Point(1, 0));
+    UP(new Point(0, -1), 0),
+    DOWN(new Point(0, 1), 180),
+    LEFT(new Point(-1, 0), 90),
+    RIGHT(new Point(1, 0), 270);
 
-    public final Point p;
+    public final Point change;
+    public final int direction;
 
-    Direction(Point p) {
-        this.p = p;
+    Direction(Point change, int d) {
+        this.change = change;
+        this.direction = d;
     }
 }
