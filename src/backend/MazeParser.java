@@ -12,7 +12,7 @@ public class MazeParser {
 
         Maze maze = null;
 
-        String[] allData = rawData.split("\n");
+        String[] allData = rawData.trim().split("\n");
 
         for (int row = 0; row < allData.length; row ++ ) {
             String[] rowData = allData[row].split(" +");
