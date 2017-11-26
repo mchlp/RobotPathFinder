@@ -30,6 +30,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 
 public class Window extends Application {
 
-    private static final double SCORE_BAR_HEIGHT = 50;
+    private static final double SCORE_BAR_HEIGHT = 40;
 
     private long prevTime;
 
@@ -184,26 +185,31 @@ public class Window extends Application {
         Pane root = new Pane();
         pane.setCenter(root);
 
-        HBox topBar = new HBox(10);
-        topBar.setPrefHeight(20);
-        topBar.setFillHeight(true);
-        topBar.getChildren().add(new Button("Test"));
+        HBox topBar = new HBox(5);
+        topBar.setPadding(new Insets(0, 5, 0, 5));
+        topBar.setPrefHeight(SCORE_BAR_HEIGHT);
+        topBar.setAlignment(Pos.CENTER_LEFT);
         pane.setTop(topBar);
 
+        Sprite.setSpriteArrayList(allSpriteList);
+        Sprite.setPane(topBar);
+
+        Button restartButton = new Button("Restart Simulation");
+        topBar.getChildren().add(restartButton);
+
+        Button otherMapButton = new Button("Select Another Map");
+        topBar.getChildren().add(otherMapButton);
+
+        ScoreIndicator scoreIndicator = new ScoreIndicator(new Text());
+
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        double minWindowDimension = Math.min(primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight()) * 0.9;
+        double minWindowDimension = Math.min(primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight()-SCORE_BAR_HEIGHT) * 0.9;
         double squareSideLength = minWindowDimension / Math.max(maze.getWidth(), maze.getHeight());
+
+        Sprite.setPane(root);
 
         root.setPrefWidth(squareSideLength * maze.getWidth());
         root.setPrefHeight(squareSideLength * maze.getHeight());
-
-        primaryStage.setTitle("Simulator");
-        primaryStage.setResizable(false);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        Sprite.setPane(root);
-        Sprite.setSpriteArrayList(allSpriteList);
 
         Rectangle[][] mazeRects = new Rectangle[maze.getWidth()][maze.getHeight()];
 
@@ -243,6 +249,12 @@ public class Window extends Application {
 
         ImageView robotImageView = new ImageView();
         Robot robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength, mazeRects);
+        scoreIndicator.setmRobot(robot);
+
+        primaryStage.setTitle("Simulator");
+        primaryStage.setResizable(false);
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
         prevTime = System.nanoTime();
         AnimationTimer timer = new AnimationTimer() {
@@ -256,6 +268,24 @@ public class Window extends Application {
         };
 
         timer.start();
+
+        restartButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                timer.stop();
+                path.resetIterator();
+                openSimulation(maze, path);
+            }
+        });
+
+        otherMapButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                timer.stop();
+                primaryStage.hide();
+                openSelectMapPopUp();
+            }
+        });
     }
 
     private void onUpdate(double deltaTime) {

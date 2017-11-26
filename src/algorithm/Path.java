@@ -36,4 +36,8 @@ public class Path {
         return mIterator.hasNext();
     }
 
+    public void resetIterator() {
+        mIterator = mPath.iterator();
+    }
+
 }

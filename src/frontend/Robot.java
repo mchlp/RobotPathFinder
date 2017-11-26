@@ -35,12 +35,15 @@ public class Robot extends Sprite {
     private boolean mDoneMoving = false;
     private int mFacingDirection = 0;
     private Rectangle[][] mMazeRect;
+    private int mNumMoves = 0;
 
     public Robot(ImageView image, Path path, Point startingPosition, double squareSideLength, Rectangle[][] mazeRect) {
 
         super(image);
 
         double imageMaxDimension = squareSideLength * 0.8;
+
+        System.out.println(startingPosition.x + " " + startingPosition.y);
 
         mImageView = (ImageView) mNode;
         mImageView.setImage(new Image(Utilities.getResourceAsStream(IMAGE_ROBOT)));
@@ -54,7 +57,7 @@ public class Robot extends Sprite {
         mPath = path;
         mMazeRect = mazeRect;
         mSquareSideLength = squareSideLength;
-        mPositionInGraphAfterMove = startingPosition;
+        mPositionInGraphAfterMove = (Point) startingPosition.clone();
         setCentreOfImage(new Coordinate(startingPosition.x * mSquareSideLength + mSquareSideLength / 2.0, startingPosition.y * mSquareSideLength + mSquareSideLength / 2.0));
 
         updateImageViewPosition();
@@ -80,6 +83,7 @@ public class Robot extends Sprite {
             if (mMoveCountdown >= MOVE_DURATION) {
 
                 mMoveCountdown = 0;
+                mNumMoves++;
 
                 double beforeMoveCentreX = mPositionInGraphAfterMove.x * mSquareSideLength + mSquareSideLength / 2.0;
                 double beforeMoveCentreY = mPositionInGraphAfterMove.y * mSquareSideLength + mSquareSideLength / 2.0;
@@ -110,5 +114,9 @@ public class Robot extends Sprite {
 
             updateImageViewPosition();
         }
+    }
+
+    public int getmNumMoves() {
+        return mNumMoves;
     }
 }
