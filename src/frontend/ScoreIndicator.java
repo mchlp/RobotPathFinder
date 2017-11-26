@@ -7,7 +7,6 @@
 package frontend;
 
 import backend.Sprite;
-import backend.Utilities;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
