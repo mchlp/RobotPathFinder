@@ -7,7 +7,6 @@
 package frontend;
 
 import algorithm.*;
-import backend.Robot;
 import backend.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -36,6 +35,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class Window extends Application {
+
+    private static final double SCORE_BAR_HEIGHT = 50;
 
     private long prevTime;
 
@@ -195,6 +196,8 @@ public class Window extends Application {
         Sprite.setPane(root);
         Sprite.setSpriteArrayList(allSpriteList);
 
+        Rectangle[][] mazeRects = new Rectangle[maze.getWidth()][maze.getHeight()];
+
         for (int col = 0; col < maze.getWidth(); col++) {
             for (int row = 0; row < maze.getHeight(); row++) {
 
@@ -225,11 +228,12 @@ public class Window extends Application {
                 cellRect.setFill(squareColor);
 
                 root.getChildren().add(cellRect);
+                mazeRects[col][row] = cellRect;
             }
         }
 
         ImageView robotImageView = new ImageView();
-        Robot robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength);
+        Robot robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength, mazeRects);
 
         prevTime = System.nanoTime();
         AnimationTimer timer = new AnimationTimer() {

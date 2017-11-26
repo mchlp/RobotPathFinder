@@ -38,11 +38,6 @@ public class Coordinate {
 		this.y = y;
 	}
 
-    public void move(Velocity velocity) {
-        this.x += velocity.getXSpeed();
-        this.y -= velocity.getYSpeed();
-    }
-
     /**
      * @return A copy of the {@link Coordinate} object
      */

@@ -4,12 +4,17 @@
  * November 2017
  */
 
-package backend;
+package frontend;
 
 import algorithm.Direction;
 import algorithm.Path;
+import backend.Coordinate;
+import backend.Sprite;
+import backend.Utilities;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import java.awt.*;
 
@@ -17,7 +22,8 @@ public class Robot extends Sprite {
 
     private static final String IMAGE_ROBOT = Utilities.IMAGE_DIRECTORY + "robot.png";
 
-    private static final double MOVE_DURATION = 1;
+    private static final double MOVE_DURATION = 0.5;
+    private static final Color VISITED_CELL_COLOUR = Color.YELLOW;
 
     private ImageView mImageView;
     private Path mPath;
@@ -28,8 +34,9 @@ public class Robot extends Sprite {
     private double mMoveCountdown = MOVE_DURATION;
     private boolean mDoneMoving = false;
     private int mFacingDirection = 0;
+    private Rectangle[][] mMazeRect;
 
-    public Robot(ImageView image, Path path, Point startingPosition, double squareSideLength) {
+    public Robot(ImageView image, Path path, Point startingPosition, double squareSideLength, Rectangle[][] mazeRect) {
 
         super(image);
 
@@ -45,6 +52,7 @@ public class Robot extends Sprite {
         }
 
         mPath = path;
+        mMazeRect = mazeRect;
         mSquareSideLength = squareSideLength;
         mPositionInGraphAfterMove = startingPosition;
         setCentreOfImage(new Coordinate(startingPosition.x * mSquareSideLength + mSquareSideLength / 2.0, startingPosition.y * mSquareSideLength + mSquareSideLength / 2.0));
@@ -76,6 +84,8 @@ public class Robot extends Sprite {
                 double beforeMoveCentreX = mPositionInGraphAfterMove.x * mSquareSideLength + mSquareSideLength / 2.0;
                 double beforeMoveCentreY = mPositionInGraphAfterMove.y * mSquareSideLength + mSquareSideLength / 2.0;
                 mPositionBeforeMove = new Coordinate(beforeMoveCentreX, beforeMoveCentreY);
+
+                mMazeRect[mPositionInGraphAfterMove.x][mPositionInGraphAfterMove.y].setFill(VISITED_CELL_COLOUR);
 
                 if (mPath.hasNext()) {
                     mCurrentDirection = mPath.getNext();
