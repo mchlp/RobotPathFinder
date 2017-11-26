@@ -7,7 +7,7 @@
 package tests;
 
 
-import backend.*;
+import algorithm.*;
 import org.junit.Test;
 
 import java.awt.*;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 public class MazeTest {
 
     @Test
-    public void testParser() {
+    public void testParser() throws InvalidMapException {
 
         String testFile = null;
         try {
@@ -40,7 +40,7 @@ public class MazeTest {
     }
 
     @Test
-    public void testSolver() {
+    public void testSolver() throws InvalidMapException {
         Direction[] answer = {Direction.LEFT, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN,
                 Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.LEFT, Direction.LEFT, Direction.DOWN,
                 Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.UP,
@@ -60,7 +60,7 @@ public class MazeTest {
     }
 
     @Test
-    public void testFull() {
+    public void testFull() throws InvalidMapException {
 
         Direction[] answer = {Direction.LEFT, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN,
                 Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.LEFT, Direction.LEFT, Direction.DOWN,

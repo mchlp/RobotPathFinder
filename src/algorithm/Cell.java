@@ -4,7 +4,7 @@
  * November 2017
  */
 
-package backend;
+package algorithm;
 
 public enum Cell {
     EMPTY, GOAL, START, WALL

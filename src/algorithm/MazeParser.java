@@ -4,11 +4,11 @@
  * November 2017
  */
 
-package backend;
+package algorithm;
 
 public class MazeParser {
 
-    public static Maze parseMaze(String rawData) {
+    public static Maze parseMaze(String rawData) throws InvalidMapException {
 
         Maze maze = null;
 
@@ -39,7 +39,7 @@ public class MazeParser {
                         curCell = Cell.GOAL;
                         break;
                     default:
-                        throw new RuntimeException("Invalid cell type.");
+                        throw new InvalidMapException("Invalid cell type.");
                 }
 
                 maze.setCell(col, row, curCell);

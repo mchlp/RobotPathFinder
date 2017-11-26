@@ -4,7 +4,7 @@
  * November 2017
  */
 
-package backend;
+package algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
