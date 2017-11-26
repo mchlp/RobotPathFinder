@@ -18,6 +18,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -41,7 +42,6 @@ public class Window extends Application {
     private long prevTime;
 
     private Stage primaryStage;
-    private Pane root;
     private ArrayList<Sprite> allSpriteList;
 
     public static void main(String[] args) {
@@ -154,6 +154,7 @@ public class Window extends Application {
                         @Override
                         public void handle(ActionEvent event) {
                             openSimulation(maze, path);
+                            outputConsole.appendText("Opening simulation...");
                             dialog.hide();
                         }
                     });
@@ -173,13 +174,21 @@ public class Window extends Application {
         return MazeSolver.solve(maze);
     }
 
-
     private void openSimulation(Maze maze, Path path) {
 
         allSpriteList = new ArrayList<>();
 
-        root = new Pane();
-        Scene scene = new Scene(root);
+        BorderPane pane = new BorderPane();
+        Scene scene = new Scene(pane);
+
+        Pane root = new Pane();
+        pane.setCenter(root);
+
+        HBox topBar = new HBox(10);
+        topBar.setPrefHeight(20);
+        topBar.setFillHeight(true);
+        topBar.getChildren().add(new Button("Test"));
+        pane.setTop(topBar);
 
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         double minWindowDimension = Math.min(primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight()) * 0.9;
