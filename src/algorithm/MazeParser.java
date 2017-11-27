@@ -18,7 +18,7 @@ public class MazeParser {
         String[] allData = rawData.trim().split("\n");
 
         for (int row = 0; row < allData.length; row ++ ) {
-            String[] rowData = allData[row].split(" +");
+            String[] rowData = allData[row].split("[ \t]+");
 
             if (row == 0) {
                 maze = new Maze(rowData.length, allData.length);

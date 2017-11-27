@@ -287,6 +287,7 @@ public class Window extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				timer.stop();
+				allSpriteList.clear();
 				primaryStage.hide();
 				openSelectMapPopUp();
 			}
