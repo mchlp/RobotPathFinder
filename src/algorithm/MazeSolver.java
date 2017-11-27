@@ -11,6 +11,8 @@ import java.util.ArrayDeque;
 
 public class MazeSolver {
 
+    //TODO put into Maze class
+
     public static Path solve(Maze maze) {
 
         ArrayDeque<Point> path = new ArrayDeque<>();

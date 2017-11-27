@@ -8,6 +8,8 @@ package algorithm;
 
 public class MazeParser {
 
+    //TODO put into Maze class
+
     public static Maze parseMaze(String rawData) throws InvalidMapException {
 
         Maze maze = null;
