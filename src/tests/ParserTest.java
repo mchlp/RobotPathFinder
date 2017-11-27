@@ -17,7 +17,7 @@ public class ParserTest {
         try {
             String file = new String(Files.readAllBytes(new File("test.txt").toPath()), "UTF-8");
             Maze maze = MazeParser.parseMaze(file);
-            Path path = MazeSolver.solve(maze);
+            Path path = maze.solveMaze();
 
             while (path.hasNext()) {
                 System.out.println(path.getNext());

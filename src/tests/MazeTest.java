@@ -50,7 +50,7 @@ public class MazeTest {
                 + "0 0 0 1 0 0 1 0 1 0\n" + "0 0 1 1 1 1 1 0 1 0\n" + "0 1 1 0 0 1 0 0 1 0\n"
                 + "0 0 1 0 0 1 1 1 1 0\n" + "0 G 0 0 0 1 0 0 1 0\n" + "0 1 0 0 1 1 1 1 1 0\n"
                 + "0 1 1 1 1 1 1 0 0 0\n" + "0 1 1 1 1 1 1 0 0 0\n");
-        Path path = MazeSolver.solve(maze);
+        Path path = maze.solveMaze();
 
         int i = 0;
         while (path.hasNext()) {
@@ -72,7 +72,7 @@ public class MazeTest {
         try {
             testFile = new String(Files.readAllBytes(new File("test.txt").toPath()), "UTF-8");
             Maze maze = MazeParser.parseMaze(testFile);
-            path = MazeSolver.solve(maze);
+            path = maze.solveMaze();
         } catch (IOException e) {
             e.printStackTrace();
         }

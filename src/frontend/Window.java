@@ -15,7 +15,6 @@ import algorithm.Cell;
 import algorithm.InvalidMapException;
 import algorithm.Maze;
 import algorithm.MazeParser;
-import algorithm.MazeSolver;
 import algorithm.Path;
 import backend.Sprite;
 import javafx.animation.AnimationTimer;
@@ -176,7 +175,7 @@ public class Window extends Application {
 	}
 
 	private Path findPath(Maze maze) {
-		return MazeSolver.solve(maze);
+		return maze.solveMaze();
 	}
 
 	private void openSimulation(Maze maze, Path path) {
