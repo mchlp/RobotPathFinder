@@ -1,13 +1,17 @@
 
 /*
  * Michael Pu
- * SpaceshipGame - Coordinate
- * November 2017
+ * RobotPathFinder - Coordinate
+ * ICS3U1 - Mr. Radulovic
+ * November 27, 2017
  */
 
 
 package backend;
 
+/**
+ * Represents a point in JavaFX by representing x and y position with double precision
+ */
 public class Coordinate {
 
 	private double x;

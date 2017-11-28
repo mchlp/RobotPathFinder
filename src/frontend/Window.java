@@ -1,7 +1,8 @@
 /*
  * Michael Pu
- * BallPhysics - Game
- * November 2017
+ * RobotPathFinder - Window
+ * ICS3U1 - Mr. Radulovic
+ * November 27, 2017
  */
 
 package frontend;

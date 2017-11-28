@@ -1,7 +1,8 @@
 /*
  * Michael Pu
  * RobotPathFinder - Robot
- * November 2017
+ * ICS3U1 - Mr. Radulovic
+ * November 27, 2017
  */
 
 package frontend;
@@ -18,6 +19,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Represents a robot moving around the maze
+ */
 public class Robot extends Sprite {
 
 	private static final String IMAGE_ROBOT = Utilities.IMAGE_DIRECTORY + "robot.png";
