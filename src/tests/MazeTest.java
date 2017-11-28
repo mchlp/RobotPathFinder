@@ -31,7 +31,7 @@ public class MazeTest {
                             + "0 0 0 1 0 0 1 0 1 0\n" + "0 0 1 1 1 1 1 0 1 0\n" + "0 1 1 0 0 1 0 0 1 0\n"
                             + "0 0 1 0 0 1 1 1 1 0\n" + "0 G 0 0 0 1 0 0 1 0\n" + "0 1 0 0 1 1 1 1 1 0\n"
                             + "0 1 1 1 1 1 1 0 0 0\n" + "0 1 1 1 1 1 1 0 0 0\n");
-            Maze maze = MazeParser.parseMaze(testFile);
+            Maze maze = new Maze(testFile);
             assertEquals(maze.getHeight(), 11);
             assertEquals(maze.getWidth(), 10);
             assertEquals(maze.getStartingPos(), new Point(9, 1));
@@ -47,7 +47,7 @@ public class MazeTest {
                 Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.UP,
                 Direction.UP,};
 
-        Maze maze = MazeParser.parseMaze("0 0 0 0 0 0 0 0 0 0\n" + "0 0 1 1 1 1 1 1 1 R\n" + "0 0 1 1 0 0 1 0 1 0\n"
+        Maze maze = new Maze("0 0 0 0 0 0 0 0 0 0\n" + "0 0 1 1 1 1 1 1 1 R\n" + "0 0 1 1 0 0 1 0 1 0\n"
                 + "0 0 0 1 0 0 1 0 1 0\n" + "0 0 1 1 1 1 1 0 1 0\n" + "0 1 1 0 0 1 0 0 1 0\n"
                 + "0 0 1 0 0 1 1 1 1 0\n" + "0 G 0 0 0 1 0 0 1 0\n" + "0 1 0 0 1 1 1 1 1 0\n"
                 + "0 1 1 1 1 1 1 0 0 0\n" + "0 1 1 1 1 1 1 0 0 0\n");
@@ -72,7 +72,7 @@ public class MazeTest {
         Path path = null;
         try {
             testFile = new String(Files.readAllBytes(new File("test.txt").toPath()), "UTF-8");
-            Maze maze = MazeParser.parseMaze(testFile);
+            Maze maze = new Maze(testFile);
             path = maze.solveMaze();
         } catch (IOException e) {
             e.printStackTrace();

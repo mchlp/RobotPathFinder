@@ -30,6 +30,67 @@ public class Maze {
         mMaze = new Cell[width][height];
     }
 
+    public Maze(String mapData) throws InvalidMapException {
+
+        boolean foundStart = false;
+        boolean foundGoal = false;
+
+        String[] allData = mapData.trim().split("\n");
+
+        for (int row = 0; row < allData.length; row ++ ) {
+            String[] rowData = allData[row].split("[ \t]+");
+
+            if (row == 0) {
+                mMaze = new Cell[rowData.length][allData.length];
+            }
+
+            for (int col = 0; col < rowData.length; col++) {
+
+                if (rowData.length != getWidth()) {
+                    throw new InvalidMapException("Different number of characters in row " + (row + 1) + ".");
+                }
+
+                Cell curCell;
+
+                switch (rowData[col]) {
+                    case "0":
+                        curCell = Cell.WALL;
+                        break;
+                    case "1":
+                        curCell = Cell.EMPTY;
+                        break;
+                    case "R":
+                        if (foundStart) {
+                            throw new InvalidMapException("More than one starting position found.");
+                        }
+                        curCell = Cell.START;
+                        foundStart = true;
+                        break;
+                    case "G":
+                        if (foundGoal) {
+                            throw new InvalidMapException("More than one goal found.");
+                        }
+                        curCell = Cell.GOAL;
+                        foundGoal = true;
+                        break;
+                    default:
+                        throw new InvalidMapException("Invalid character in map.");
+                }
+
+                setCell(col, row, curCell);
+            }
+
+        }
+
+        if (!foundGoal) {
+            throw new InvalidMapException("Goal not found in map.");
+        }
+
+        if (!foundStart) {
+            throw new InvalidMapException("Start position not found in map.");
+        }
+    }
+
     /**
      * Sets the content of a cell in the maze
      *
@@ -145,11 +206,6 @@ public class Maze {
                 if (getCell(newX, newY) == Cell.WALL)
                     continue;
 
-<<<<<<< HEAD
-                // 
-=======
-                // set parent of explore point in parent array
->>>>>>> 1d1c1c3ce4441e3384c7006e932be7708ef397d2
                 parentArray[newX][newY] = new Move(direction, curPoint);
 
                 // add point to end of queue

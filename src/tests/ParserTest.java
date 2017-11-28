@@ -17,7 +17,7 @@ public class ParserTest {
     public static void main(String[] args) throws InvalidMapException{
         try {
             String file = new String(Files.readAllBytes(new File("test.txt").toPath()), "UTF-8");
-            Maze maze = MazeParser.parseMaze(file);
+            Maze maze = new Maze(file);
             Path path = maze.solveMaze();
 
             while (path.hasNext()) {

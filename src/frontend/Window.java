@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import algorithm.Cell;
 import algorithm.InvalidMapException;
 import algorithm.Maze;
-import algorithm.MazeParser;
 import algorithm.Path;
 import backend.Sprite;
 import javafx.animation.AnimationTimer;
@@ -172,7 +171,7 @@ public class Window extends Application {
 
 	private Maze loadMap(File mapFile) throws InvalidMapException, IOException {
 		String contents = new String(Files.readAllBytes(mapFile.toPath()));
-		return MazeParser.parseMaze(contents);
+		return new Maze(contents);
 	}
 
 	private Path findPath(Maze maze) {
