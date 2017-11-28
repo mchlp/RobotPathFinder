@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import algorithm.Cell;
-import algorithm.InvalidMapException;
+import algorithm.InvalidMazeException;
 import algorithm.Maze;
 import algorithm.Path;
 import javafx.animation.AnimationTimer;
@@ -37,259 +37,341 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+/**
+ * JavaFX Application to be displayed to user
+ */
 public class Window extends Application {
 
-	private static final double SCORE_BAR_HEIGHT = 40;
+    // the height of the menu bar on top of the display in pixels
+    private static final double SCORE_BAR_HEIGHT = 40;
+    private static final double WINDOW_PERCENTAGE_OF_FULL_SCREEN = 0.9;
 
-	private long prevTime;
+    // the last time the frame was updated
+    private long prevTime;
 
-	private Stage primaryStage;
-	private Robot robot;
-	private ScoreIndicator scoreIndicator;
+    // the stage the application will be displayed in
+    private Stage primaryStage;
 
-	public static void main(String[] args) {
-		launch(args);
-	}
+    // member variables for sprites on screen that need to be updated
+    private Robot robot;
+    private ScoreIndicator scoreIndicator;
 
-	@Override
-	public void start(Stage stage) throws Exception {
-		primaryStage = stage;
-		openSelectMapPopUp();
-	}
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-	private void openSelectMapPopUp() {
+    @Override
+    public void start(Stage stage) throws Exception {
+        primaryStage = stage;
+        // opens the map select window
+        openSelectMapPopUp();
+    }
 
-		Stage dialog = new Stage();
-		dialog.initModality(Modality.APPLICATION_MODAL);
-		dialog.initOwner(primaryStage);
-		dialog.setTitle("Select a Map");
-		dialog.setWidth(500);
-		dialog.setResizable(false);
-		dialog.setAlwaysOnTop(true);
+    /**
+     * Opens up the map select window for the user to select a map and to process the selected map
+     */
+    private void openSelectMapPopUp() {
 
-		VBox dialogRoot = new VBox(10);
-		Scene dialogScene = new Scene(dialogRoot);
-		dialogRoot.setAlignment(Pos.TOP_LEFT);
-		dialogRoot.setPadding(new Insets(15));
-		dialog.setScene(dialogScene);
+        // new stage for the map select pop up
+        Stage dialog = new Stage();
 
-		File defaultDir = new File(System.getProperty("user.home"));
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setInitialDirectory(defaultDir);
-		fileChooser.setTitle("Open Map File");
+        // set up the stage for the map pop up
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(primaryStage);
+        dialog.setTitle("Select a Map");
+        dialog.setWidth(500);
+        dialog.setResizable(false);
+        dialog.setAlwaysOnTop(true);
 
-		OutputConsole outputConsole = new OutputConsole();
-		outputConsole.setPrefHeight(300);
-		outputConsole.setEditable(false);
-		outputConsole.setWrapText(true);
-		outputConsole.setInitalText("Please choose a map file to use.");
+        // set up the pane and scene for the map pop up
+        VBox dialogRoot = new VBox(10);
+        Scene dialogScene = new Scene(dialogRoot);
+        dialogRoot.setAlignment(Pos.TOP_LEFT);
+        dialogRoot.setPadding(new Insets(15));
+        dialog.setScene(dialogScene);
 
-		HBox buttons = new HBox(10);
+        // set the default directory for the file chooser
+        File defaultDir = new File(System.getProperty("user.home"));
 
-		Button selectFileButton = new Button("Choose File");
-		buttons.getChildren().add(selectFileButton);
+        // set up the file chooser
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(defaultDir);
+        fileChooser.setTitle("Open Map File");
 
-		Button startSimulationButton = new Button("Start Simulation");
-		startSimulationButton.setDisable(true);
-		buttons.getChildren().add(startSimulationButton);
+        // set up the output console
+        OutputConsole outputConsole = new OutputConsole();
+        outputConsole.setPrefHeight(300);
+        outputConsole.setEditable(false);
+        outputConsole.setWrapText(true);
+        outputConsole.setInitalText("Please choose a map file to use.");
 
-		Text fileText = new Text("No file has been selected.");
-		fileText.setWrappingWidth(dialog.getWidth() * 0.9);
-		fileText.setFill(Color.RED);
+        // set up HBox for buttons
+        HBox buttons = new HBox(10);
 
-		dialogRoot.getChildren().add(outputConsole);
-		dialogRoot.getChildren().add(buttons);
-		dialogRoot.getChildren().add(fileText);
+        // set up buttons
+        Button selectFileButton = new Button("Choose File");
 
-		dialog.show();
+        Button startSimulationButton = new Button("Start Simulation");
+        startSimulationButton.setDisable(true);
 
-		selectFileButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
+        buttons.getChildren().add(selectFileButton);
+        buttons.getChildren().add(startSimulationButton);
 
-				Maze maze;
+        // set up the label display the path of the file selected
+        Text fileText = new Text("No file has been selected.");
+        fileText.setWrappingWidth(dialog.getWidth() * 0.9);
+        fileText.setFill(Color.RED);
 
-				File mapFile = fileChooser.showOpenDialog(dialog);
+        // add everything to the root
+        dialogRoot.getChildren().add(outputConsole);
+        dialogRoot.getChildren().add(buttons);
+        dialogRoot.getChildren().add(fileText);
 
-				if (mapFile == null) {
-					return;
-				}
+        // show the dialog
+        dialog.show();
 
-				fileText.setText(mapFile.getAbsolutePath());
-				fileText.setFill(Color.BLACK);
+        // set the action for when the select file button is pressed
+        selectFileButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
 
-				try {
-					outputConsole.appendText("Reading file: " + mapFile.getCanonicalPath());
-				} catch (IOException e) {
-					outputConsole.appendText(e.toString() + "\nInvalid file. Please select another file");
-					fileText.setFill(Color.RED);
-					return;
-				}
+                // initialize variable to store maze
+                Maze maze;
 
-				try {
-					maze = loadMap(mapFile);
-				} catch (InvalidMapException e) {
-					outputConsole.appendText(e.toString() + "\nInvalid map file. Please select another file.");
-					fileText.setFill(Color.RED);
-					return;
-				} catch (IOException e) {
-					outputConsole.appendText(e.toString() + "\nInvalid path to map file. Please select another file");
-					fileText.setFill(Color.RED);
-					return;
-				}
+                // get a file from the file chooser dialog
+                File mazeFile = fileChooser.showOpenDialog(dialog);
 
-				outputConsole.appendText("Successfully read and parsed the map file.");
-				fileText.setFill(Color.GREEN);
-				outputConsole.appendText("Attempting to find shortest path in map...");
-				long startFindPath = System.nanoTime();
-				Path path = findPath(maze);
+                // if a file was not chosen, exit the method
+                if (mazeFile == null) {
+                    return;
+                }
 
-				if (path == null) {
-					outputConsole.appendText("No path found. Please select another map.");
-					fileText.setFill(Color.RED);
-				} else {
-					double findPathTime = (System.nanoTime() - startFindPath) / 1E6;
-					String findPathString = String.format("%.4f milliseconds", findPathTime);
-					outputConsole.appendText("Path found in " + findPathString + ". Ready for simulation.");
-					startSimulationButton.setDisable(false);
+                // update the label with the path to the file
+                fileText.setText(mazeFile.getAbsolutePath());
+                fileText.setFill(Color.BLACK);
 
-					startSimulationButton.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							openSimulation(maze, path);
-							outputConsole.appendText("Opening simulation...");
-							dialog.hide();
-						}
-					});
-				}
+                // update output console text
+                try {
+                    outputConsole.appendText("Reading file: " + mazeFile.getCanonicalPath());
+                } catch (IOException e) {
+                    outputConsole.appendText(e.toString() + "\nInvalid file. Please select another file");
+                    fileText.setFill(Color.RED);
+                    startSimulationButton.setDisable(true);
+                    return;
+                }
 
-			}
-		});
+                // attempt to load and validate maze and handle errors
+                try {
+                    // reads the entire file into a string
+                    String contents = new String(Files.readAllBytes(mazeFile.toPath()));
+                    // parses the string into a maze
+                    maze = new Maze(contents);
+                } catch (InvalidMazeException e) {
+                    // if an invalid maze file was read
+                    outputConsole.appendText(e.toString() + "\nInvalid maze file. Please select another file.");
+                    fileText.setFill(Color.RED);
+                    startSimulationButton.setDisable(true);
+                    return;
+                } catch (IOException e) {
+                    // if the maze file could not be accessed
+                    outputConsole.appendText(e.toString() + "\nInvalid path to maze file. Please select another file");
+                    fileText.setFill(Color.RED);
+                    startSimulationButton.setDisable(true);
+                    return;
+                }
 
-	}
+                // when the maze has been successfully loaded and validated
+                outputConsole.appendText("Successfully read and parsed the maze file.");
+                fileText.setFill(Color.GREEN);
+                outputConsole.appendText("Attempting to find shortest path in maze...");
 
-	private Maze loadMap(File mapFile) throws InvalidMapException, IOException {
-		String contents = new String(Files.readAllBytes(mapFile.toPath()));
-		return new Maze(contents);
-	}
+                // start finding shortest path in the maze
+                long startFindPath = System.nanoTime();
+                Path path = maze.solveMaze();
 
-	private Path findPath(Maze maze) {
-		return maze.solveMaze();
-	}
+                if (path == null) {
+                    // if no path from start point to goal was found
+                    outputConsole.appendText("No path found. Please select another maze.");
+                    fileText.setFill(Color.RED);
+                    startSimulationButton.setDisable(true);
 
-	private void openSimulation(Maze maze, Path path) {
+                } else {
 
-		BorderPane pane = new BorderPane();
-		Scene scene = new Scene(pane);
+                    // if a path was found
+                    // calculate the time used to compute the shortest path
+                    double findPathTime = (System.nanoTime() - startFindPath) / 1E6;
+                    String findPathString = String.format("%.4f milliseconds", findPathTime);
+                    outputConsole.appendText("Path found in " + findPathString + ". Ready for simulation.");
 
-		Pane root = new Pane();
-		pane.setCenter(root);
+                    // enable start simulation button
+                    startSimulationButton.setDisable(false);
 
-		HBox topBar = new HBox(5);
-		topBar.setPadding(new Insets(0, 5, 0, 5));
-		topBar.setPrefHeight(SCORE_BAR_HEIGHT);
-		topBar.setAlignment(Pos.CENTER_LEFT);
-		pane.setTop(topBar);
+                    // set action for when start simulation button is pressed
+                    startSimulationButton.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            // starts the simulation screen
+                            outputConsole.appendText("Opening simulation...");
+                            dialog.hide();
+                            openSimulation(maze, path);
+                        }
+                    });
+                }
 
-		Button restartButton = new Button("Restart Simulation");
-		topBar.getChildren().add(restartButton);
+            }
+        });
 
-		Button otherMapButton = new Button("Select Another Map");
-		topBar.getChildren().add(otherMapButton);
+    }
 
+    /**
+     * Opens up the simulation window to show a robot moving through the maze from the starting point to the goal point using the shortest path
+     *
+     * @param maze the maze to be displayed
+     * @param path the shortest path from the starting point to the goal point
+     */
+    private void openSimulation(Maze maze, Path path) {
+
+        // set up pane and screen
+        BorderPane pane = new BorderPane();
+        Scene scene = new Scene(pane);
+
+        // set up HBox for display score and buttons (above root pane)
+        HBox topBar = new HBox(5);
+        topBar.setPadding(new Insets(0, 5, 0, 5));
+        topBar.setPrefHeight(SCORE_BAR_HEIGHT);
+        topBar.setAlignment(Pos.CENTER_LEFT);
+        pane.setTop(topBar);
+
+        // set up buttons in the HBox
+        Button restartButton = new Button("Restart Simulation");
+        topBar.getChildren().add(restartButton);
+
+        Button otherMapButton = new Button("Select Another Map");
+        topBar.getChildren().add(otherMapButton);
+
+        // set up the score indicator in the HBox
         Text scoreIndicatorText = new Text();
         scoreIndicator = new ScoreIndicator(scoreIndicatorText);
         topBar.getChildren().add(scoreIndicatorText);
 
-		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-		double minWindowDimension = Math.min(primaryScreenBounds.getWidth(),
-				primaryScreenBounds.getHeight() - SCORE_BAR_HEIGHT) * 0.9;
-		double squareSideLength = minWindowDimension / Math.max(maze.getWidth(), maze.getHeight());
+        // set up root pane for displaying simulation
+        Pane root = new Pane();
+        pane.setCenter(root);
 
-		root.setPrefWidth(squareSideLength * maze.getWidth());
-		root.setPrefHeight(squareSideLength * maze.getHeight());
+        // calculate the size of the window and the size of each square
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        double minWindowDimension = Math.min(primaryScreenBounds.getWidth(),
+                primaryScreenBounds.getHeight() - SCORE_BAR_HEIGHT) * WINDOW_PERCENTAGE_OF_FULL_SCREEN;
+        double squareSideLength = minWindowDimension / Math.max(maze.getWidth(), maze.getHeight());
 
-		Rectangle[][] mazeRects = new Rectangle[maze.getWidth()][maze.getHeight()];
+        // set up the size of the root pane using the calculated dimensions
+        root.setPrefWidth(squareSideLength * maze.getWidth());
+        root.setPrefHeight(squareSideLength * maze.getHeight());
 
-		for (int col = 0; col < maze.getWidth(); col++) {
-			for (int row = 0; row < maze.getHeight(); row++) {
+        // 2D array to store all squares in the maze
+        Rectangle[][] mazeRects = new Rectangle[maze.getWidth()][maze.getHeight()];
 
-				Cell curCell = maze.getCell(col, row);
-				Color squareColor = null;
+        // add Rectangles to maze, each representing one cell
+        for (int col = 0; col < maze.getWidth(); col++) {
+            for (int row = 0; row < maze.getHeight(); row++) {
 
-				switch (curCell) {
-				case GOAL:
-					squareColor = Color.RED;
-					break;
-				case START:
-					squareColor = Color.GREEN;
-					break;
-				case EMPTY:
-					squareColor = Color.LIGHTGREY;
-					break;
-				case WALL:
-					squareColor = Color.BLUE;
-				}
+                // get cell contents
+                Cell curCell = maze.getCell(col, row);
+                Color squareColor = null;
 
-				Rectangle cellRect = new Rectangle();
-				cellRect.setStroke(Color.BLACK);
-				cellRect.setStrokeWidth(1);
-				cellRect.setX(col * squareSideLength);
-				cellRect.setY(row * squareSideLength);
-				cellRect.setWidth(squareSideLength);
-				cellRect.setHeight(squareSideLength);
-				cellRect.setFill(squareColor);
+                // set colour of Rectangle
+                switch (curCell) {
+                    case GOAL:
+                        squareColor = Color.RED;
+                        break;
+                    case START:
+                        squareColor = Color.GREEN;
+                        break;
+                    case EMPTY:
+                        squareColor = Color.LIGHTGREY;
+                        break;
+                    case WALL:
+                        squareColor = Color.BLUE;
+                }
 
-				root.getChildren().add(cellRect);
-				mazeRects[col][row] = cellRect;
-			}
-		}
+                // set up the Rectangle that will represent the cell
+                Rectangle cellRect = new Rectangle();
+                cellRect.setStroke(Color.BLACK);
+                cellRect.setStrokeWidth(1);
+                cellRect.setX(col * squareSideLength);
+                cellRect.setY(row * squareSideLength);
+                cellRect.setWidth(squareSideLength);
+                cellRect.setHeight(squareSideLength);
+                cellRect.setFill(squareColor);
 
-		ImageView robotImageView = new ImageView();
-		robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength, mazeRects);
-		scoreIndicator.setmRobot(robot);
+                // add to root pane and array
+                root.getChildren().add(cellRect);
+                mazeRects[col][row] = cellRect;
+            }
+        }
 
-		root.getChildren().add(robotImageView);
+        // set up robot
+        ImageView robotImageView = new ImageView();
+        robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength, mazeRects);
+        scoreIndicator.setmRobot(robot);
+        root.getChildren().add(robotImageView);
 
-		primaryStage.setTitle("Simulator");
-		primaryStage.setResizable(false);
-		primaryStage.setScene(scene);
-		primaryStage.show();
+        // set up primary stage
+        primaryStage.setTitle("Simulator");
+        primaryStage.setResizable(false);
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
-		prevTime = System.nanoTime();
-		AnimationTimer timer = new AnimationTimer() {
-			@Override
-			public void handle(long curTime) {
-				double deltaTime = (curTime - prevTime) / 1E9;
-				System.out.println(1 / deltaTime);
-				onUpdate(deltaTime);
-				prevTime = curTime;
-			}
-		};
+        // set up time frame was last updated
+        prevTime = System.nanoTime();
 
-		timer.start();
+        // set up animation timer
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long curTime) {
+                // calculate the number of seconds that has elapsed since screen was last updated
+                double deltaTime = (curTime - prevTime) / 1E9;
+                // display FPS for debugging
+                System.out.println(1 / deltaTime);
+                // update the screen
+                onUpdate(deltaTime);
+                // update the prevTime with current time
+                prevTime = curTime;
+            }
+        };
 
-		restartButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				timer.stop();
-				path.resetIterator();
-				openSimulation(maze, path);
-			}
-		});
+        // set action for when restart button is pressed
+        restartButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                timer.stop();
+                path.resetIterator();
+                openSimulation(maze, path);
+            }
+        });
 
-		otherMapButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				timer.stop();
-				primaryStage.hide();
-				openSelectMapPopUp();
-			}
-		});
-	}
+        // set action for when use other map button is pressed
+        otherMapButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                timer.stop();
+                primaryStage.hide();
+                openSelectMapPopUp();
+            }
+        });
 
-	private void onUpdate(double deltaTime) {
-		robot.update(deltaTime);
-		scoreIndicator.update(deltaTime);
-	}
+        // start the timer
+        timer.start();
+    }
+
+
+    /**
+     * Run every frame and updates the contents of the screen
+     *
+     * @param deltaTime the number of seconds elapsed since the last update
+     */
+    private void onUpdate(double deltaTime) {
+        robot.update(deltaTime);
+        scoreIndicator.update(deltaTime);
+    }
 }

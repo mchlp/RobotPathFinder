@@ -30,7 +30,7 @@ public class Maze {
         mMaze = new Cell[width][height];
     }
 
-    public Maze(String mapData) throws InvalidMapException {
+    public Maze(String mapData) throws InvalidMazeException {
 
         boolean foundStart = false;
         boolean foundGoal = false;
@@ -47,7 +47,7 @@ public class Maze {
             for (int col = 0; col < rowData.length; col++) {
 
                 if (rowData.length != getWidth()) {
-                    throw new InvalidMapException("Different number of characters in row " + (row + 1) + ".");
+                    throw new InvalidMazeException("Different number of characters in row " + (row + 1) + ".");
                 }
 
                 Cell curCell;
@@ -61,20 +61,20 @@ public class Maze {
                         break;
                     case "R":
                         if (foundStart) {
-                            throw new InvalidMapException("More than one starting position found.");
+                            throw new InvalidMazeException("More than one starting position found.");
                         }
                         curCell = Cell.START;
                         foundStart = true;
                         break;
                     case "G":
                         if (foundGoal) {
-                            throw new InvalidMapException("More than one goal found.");
+                            throw new InvalidMazeException("More than one goal found.");
                         }
                         curCell = Cell.GOAL;
                         foundGoal = true;
                         break;
                     default:
-                        throw new InvalidMapException("Invalid character in map.");
+                        throw new InvalidMazeException("Invalid character in map.");
                 }
 
                 setCell(col, row, curCell);
@@ -83,11 +83,11 @@ public class Maze {
         }
 
         if (!foundGoal) {
-            throw new InvalidMapException("Goal not found in map.");
+            throw new InvalidMazeException("Goal not found in map.");
         }
 
         if (!foundStart) {
-            throw new InvalidMapException("Start position not found in map.");
+            throw new InvalidMazeException("Start position not found in map.");
         }
     }
 

@@ -44,7 +44,7 @@ public class Robot {
 	private Coordinate mPositionBeforeMove;
 	// position of robot in the maze after the move (col, row)
 	private Point mPositionInGraphAfterMove;
-	// time before move should be complete
+	// time before move should be complete (seconds)
 	private double mMoveCountdown = MOVE_DURATION;
 	// if the robot has finished the path
 	private boolean mDoneMoving = false;

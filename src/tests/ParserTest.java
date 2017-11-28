@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class ParserTest {
-    public static void main(String[] args) throws InvalidMapException{
+    public static void main(String[] args) throws InvalidMazeException {
         try {
             String file = new String(Files.readAllBytes(new File("test.txt").toPath()), "UTF-8");
             Maze maze = new Maze(file);

@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 public class MazeTest {
 
     @Test
-    public void testParser() throws InvalidMapException {
+    public void testParser() throws InvalidMazeException {
 
         String testFile = null;
         try {
@@ -41,7 +41,7 @@ public class MazeTest {
     }
 
     @Test
-    public void testSolver() throws InvalidMapException {
+    public void testSolver() throws InvalidMazeException {
         Direction[] answer = {Direction.LEFT, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN,
                 Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.LEFT, Direction.LEFT, Direction.DOWN,
                 Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.LEFT, Direction.UP,
@@ -61,7 +61,7 @@ public class MazeTest {
     }
 
     @Test
-    public void testFull() throws InvalidMapException {
+    public void testFull() throws InvalidMazeException {
 
         Direction[] answer = {Direction.LEFT, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN,
                 Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.LEFT, Direction.LEFT, Direction.DOWN,
