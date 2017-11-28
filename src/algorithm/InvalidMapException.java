@@ -6,22 +6,11 @@
 
 package algorithm;
 
+/**
+ * Exception thrown when an invalid map is loaded
+ */
 public class InvalidMapException extends Exception {
-
-    public InvalidMapException() {
-        super();
-    }
-
     public InvalidMapException(String message) {
         super(message);
     }
-
-    public InvalidMapException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidMapException(Throwable cause) {
-        super(cause);
-    }
-
 }

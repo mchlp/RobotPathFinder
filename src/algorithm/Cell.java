@@ -6,6 +6,9 @@
 
 package algorithm;
 
+/**
+ * Represents one square in the maze
+ */
 public enum Cell {
     EMPTY, GOAL, START, WALL
 }
