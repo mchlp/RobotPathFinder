@@ -265,7 +265,7 @@ public class Window extends Application {
 			@Override
 			public void handle(long curTime) {
 				double deltaTime = (curTime - prevTime) / 1E9;
-				// System.out.println(1 / deltaTime);
+				System.out.println(1 / deltaTime);
 				onUpdate(deltaTime);
 				prevTime = curTime;
 			}

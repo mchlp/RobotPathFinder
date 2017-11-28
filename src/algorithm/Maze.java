@@ -139,7 +139,7 @@ public class Maze {
                 if (getCell(newX, newY) == Cell.WALL)
                     continue;
 
-
+                // 
                 parentArray[newX][newY] = new Move(direction, curPoint);
                 path.addLast(new Point(newX, newY));
             }
