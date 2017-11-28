@@ -12,6 +12,8 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 
+//TODO remove abstract class
+
 /**
  * Represents a updatable node in JavaFX
  */

@@ -7,9 +7,9 @@
 
 package backend;
 
-import javafx.scene.paint.Color;
-
 import java.io.InputStream;
+
+//TODO remove final classs
 
 /**
  * Utilities for various functions
