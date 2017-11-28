@@ -1,7 +1,8 @@
 /*
  * Michael Pu
  * RobotPathFinder - Maze
- * November 2017
+ * ICS3U1 - Mr. Radulovic
+ * November 27, 2017
  */
 
 package algorithm;
@@ -94,12 +95,17 @@ public class Maze {
      */
     public Path solveMaze() {
 
+        /*
+        Uses BFS algorithm to find the goal point while keeping track of the parent of each point
+        (the point visited before that point)
+         */
+
         // queue to keep track of path
-        ArrayDeque<Point> path = new ArrayDeque<>();
+        ArrayDeque<Point> queue = new ArrayDeque<>();
 
         // push starting point into queue
         Point startPoint = getStartingPos();
-        path.push(startPoint);
+        queue.push(startPoint);
 
         // keep track of which points have been visited, and if visited, its parent
         Move[][] parentArray = new Move[getWidth()][getHeight()];
@@ -109,10 +115,10 @@ public class Maze {
         Point goalPoint = null;
 
         // while the queue is not empty
-        while (!path.isEmpty()) {
+        while (!queue.isEmpty()) {
 
             // pop point from queue to explore next
-            Point curPoint = path.removeFirst();
+            Point curPoint = queue.removeFirst();
 
             // if the current point is the goal
             if (getCell(curPoint.x, curPoint.y) == Cell.GOAL) {
@@ -139,26 +145,45 @@ public class Maze {
                 if (getCell(newX, newY) == Cell.WALL)
                     continue;
 
+<<<<<<< HEAD
                 // 
+=======
+                // set parent of explore point in parent array
+>>>>>>> 1d1c1c3ce4441e3384c7006e932be7708ef397d2
                 parentArray[newX][newY] = new Move(direction, curPoint);
-                path.addLast(new Point(newX, newY));
+
+                // add point to end of queue
+                queue.addLast(new Point(newX, newY));
             }
         }
 
+        // if no path from start to goal was found
         if (goalPoint == null) {
             return null;
         }
 
+        // initialize path to store path from starting point to goal
         Path foundPath = new Path();
 
+        // set the current location to the parent of the goal point
         Move currentLocation = parentArray[goalPoint.x][goalPoint.y];
 
+        /*
+        Starts with the goal point, follows the parent of each point using the parent array until the starting point
+        is reached and adds the direction of each point to the path
+        */
+
+        // while the current location is not the starting position
         while (currentLocation.getmPosition() != null) {
+            // add the direction of the current location to the path
             foundPath.add(currentLocation.getmDirection());
+            // get the coordinates of the current point
             Point pos = currentLocation.getmPosition();
+            // set the current location to the parent of the current point
             currentLocation = parentArray[pos.x][pos.y];
         }
 
+        // reverse the path and set iterator for reading path elements
         foundPath.reverseAndFinalize();
 
         return foundPath;

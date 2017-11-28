@@ -1,13 +1,17 @@
 /*
  * Michael Pu
  * RobotPathFinder - Move
- * November 2017
+ * ICS3U1 - Mr. Radulovic
+ * November 27, 2017
  */
 
 package algorithm;
 
 import java.awt.*;
 
+/**
+ * Represents a move with a direction and the ending position
+ */
 public class Move {
 
     private Direction mDirection;
