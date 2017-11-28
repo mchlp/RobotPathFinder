@@ -12,7 +12,6 @@ import java.awt.Point;
 import algorithm.Direction;
 import algorithm.Path;
 import backend.Coordinate;
-import backend.Sprite;
 import backend.Utilities;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,47 +21,68 @@ import javafx.scene.shape.Rectangle;
 /**
  * Represents a robot moving around the maze
  */
-public class Robot extends Sprite {
+public class Robot {
 
+    // location of image of robot
 	private static final String IMAGE_ROBOT = Utilities.IMAGE_DIRECTORY + "robot.png";
-
+    // amount of time to take for each move (seconds)
 	private static final double MOVE_DURATION = 0.5;
+	// colour of visited cell
 	private static final Color VISITED_CELL_COLOUR = Color.YELLOW;
 
+	// position of robot
+	private Coordinate mPosition;
+	// imageView of robot
 	private ImageView mImageView;
+	// path for robot to follow
 	private Path mPath;
+	// width of each cell (pixels)
 	private double mSquareSideLength;
+	// direction robot is current proceeding in
 	private Direction mCurrentDirection;
+	// position of robot before the move (pixels, pixels)
 	private Coordinate mPositionBeforeMove;
+	// position of robot in the maze after the move (col, row)
 	private Point mPositionInGraphAfterMove;
+	// time before move should be complete
 	private double mMoveCountdown = MOVE_DURATION;
+	// if the robot has finished the path
 	private boolean mDoneMoving = false;
+	// the direction the robot is currently facing (angle, up = 0 degrees, right = 90 degrees, down = 180 degrees, left = 270 degrees)
 	private int mFacingDirection = 0;
+	// array storing the rectangles representing each cell maze
 	private Rectangle[][] mMazeRect;
+	// the number of moves the robot has made
 	private int mNumMoves = 0;
 
 	public Robot(ImageView image, Path path, Point startingPosition, double squareSideLength, Rectangle[][] mazeRect) {
 
-		super(image);
-
+		// set dimensions for robot image
 		double imageMaxDimension = squareSideLength * 0.8;
 
-		mImageView = (ImageView) mNode;
+		// set up imageView of robot
+		mImageView = image;
 		mImageView.setImage(new Image(Utilities.getResourceAsStream(IMAGE_ROBOT)));
 		mImageView.setPreserveRatio(true);
+		// resize image depending if the width or length of image is larger
 		if (mImageView.getFitWidth() > mImageView.getFitHeight()) {
 			mImageView.setFitWidth(imageMaxDimension);
 		} else {
 			mImageView.setFitHeight(imageMaxDimension);
 		}
 
+		// set up member variables
 		mPath = path;
 		mMazeRect = mazeRect;
+		mPosition = new Coordinate();
 		mSquareSideLength = squareSideLength;
 		mPositionInGraphAfterMove = (Point) startingPosition.clone();
+
+		// set inital position of the robot
 		setCentreOfImage(new Coordinate(startingPosition.x * mSquareSideLength + mSquareSideLength / 2.0,
 				startingPosition.y * mSquareSideLength + mSquareSideLength / 2.0));
 
+		// update the imageView if the robot
 		updateImageViewPosition();
 	}
 
@@ -71,7 +91,12 @@ public class Robot extends Sprite {
 		mImageView.setY(mPosition.getY());
 	}
 
-	private void setCentreOfImage(Coordinate centrePosition) {
+    /**
+     * Sets the position of the imageView so that the centre of the imageView is the provided coordinate
+     *
+     * @param centrePosition the coordinate representing where the centre of the imageView should be
+     */
+    private void setCentreOfImage(Coordinate centrePosition) {
 		double width = mImageView.getBoundsInParent().getWidth();
 		double height = mImageView.getBoundsInParent().getHeight();
 		mPosition.setX(centrePosition.getX() - (width / 2));
@@ -79,48 +104,66 @@ public class Robot extends Sprite {
 		updateImageViewPosition();
 	}
 
-	@Override
 	public void update(double deltaTime) {
+        // update only if the robot has not finished the path
 		if (!mDoneMoving) {
+
+		    // add to the amount of time spend on the current move
 			mMoveCountdown += deltaTime;
+
+			// if the time spent on the current move has reached the time for each move
 			if (mMoveCountdown >= MOVE_DURATION) {
 
+			    // reset move timer
 				mMoveCountdown = 0;
+				// add number of moves
 				mNumMoves++;
 
+				// set new before move position (used to calculate the position of the robot in the middle of a move)
 				double beforeMoveCentreX = mPositionInGraphAfterMove.x * mSquareSideLength + mSquareSideLength / 2.0;
 				double beforeMoveCentreY = mPositionInGraphAfterMove.y * mSquareSideLength + mSquareSideLength / 2.0;
 				mPositionBeforeMove = new Coordinate(beforeMoveCentreX, beforeMoveCentreY);
 
+				// set the colour of the previous cell to the visited colour
 				mMazeRect[mPositionInGraphAfterMove.x][mPositionInGraphAfterMove.y].setFill(VISITED_CELL_COLOUR);
 
+				// if there are still moves left in the path
 				if (mPath.hasNext()) {
+				    // get the next move from the path
 					mCurrentDirection = mPath.getNext();
+					// set the position of of the robot in the graph after this move
 					mPositionInGraphAfterMove.x += mCurrentDirection.change.x;
 					mPositionInGraphAfterMove.y += mCurrentDirection.change.y;
+					// rotate the robot to face the direction it is moving
 					int imageRotateAmount = mFacingDirection - mCurrentDirection.direction;
 					mImageView.setRotate(imageRotateAmount);
 
 				} else {
+				    // when the robot has finished the path
 					mPosition = mPositionBeforeMove.copy();
 					mDoneMoving = true;
 					return;
 				}
 			}
 
+			// calculate the distance the robot is away from its last cell according to the amount of time that has elapsed since the beginning of the last move
 			double offsetX = mCurrentDirection.change.x * mSquareSideLength * (mMoveCountdown / MOVE_DURATION);
 			double offsetY = mCurrentDirection.change.y * mSquareSideLength * (mMoveCountdown / MOVE_DURATION);
 
+			// calculate and set the new centre position of the image using the offset calculated earlier
 			Coordinate newCentre = new Coordinate(mPositionBeforeMove.getX() + offsetX,
 					mPositionBeforeMove.getY() + offsetY);
-
 			setCentreOfImage(newCentre);
 
+			// update the imageView of the robot
 			updateImageViewPosition();
 		}
 	}
 
-	public int getmNumMoves() {
+    /**
+     * @return the number of moves the robot has made
+     */
+    public int getmNumMoves() {
 		return mNumMoves;
 	}
 }

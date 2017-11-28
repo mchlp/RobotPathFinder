@@ -10,13 +10,11 @@ package frontend;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 
 import algorithm.Cell;
 import algorithm.InvalidMapException;
 import algorithm.Maze;
 import algorithm.Path;
-import backend.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -46,7 +44,8 @@ public class Window extends Application {
 	private long prevTime;
 
 	private Stage primaryStage;
-	private ArrayList<Sprite> allSpriteList;
+	private Robot robot;
+	private ScoreIndicator scoreIndicator;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -180,8 +179,6 @@ public class Window extends Application {
 
 	private void openSimulation(Maze maze, Path path) {
 
-		allSpriteList = new ArrayList<>();
-
 		BorderPane pane = new BorderPane();
 		Scene scene = new Scene(pane);
 
@@ -194,23 +191,20 @@ public class Window extends Application {
 		topBar.setAlignment(Pos.CENTER_LEFT);
 		pane.setTop(topBar);
 
-		Sprite.setSpriteArrayList(allSpriteList);
-		Sprite.setPane(topBar);
-
 		Button restartButton = new Button("Restart Simulation");
 		topBar.getChildren().add(restartButton);
 
 		Button otherMapButton = new Button("Select Another Map");
 		topBar.getChildren().add(otherMapButton);
 
-		ScoreIndicator scoreIndicator = new ScoreIndicator(new Text());
+        Text scoreIndicatorText = new Text();
+        scoreIndicator = new ScoreIndicator(scoreIndicatorText);
+        topBar.getChildren().add(scoreIndicatorText);
 
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 		double minWindowDimension = Math.min(primaryScreenBounds.getWidth(),
 				primaryScreenBounds.getHeight() - SCORE_BAR_HEIGHT) * 0.9;
 		double squareSideLength = minWindowDimension / Math.max(maze.getWidth(), maze.getHeight());
-
-		Sprite.setPane(root);
 
 		root.setPrefWidth(squareSideLength * maze.getWidth());
 		root.setPrefHeight(squareSideLength * maze.getHeight());
@@ -252,8 +246,10 @@ public class Window extends Application {
 		}
 
 		ImageView robotImageView = new ImageView();
-		Robot robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength, mazeRects);
+		robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength, mazeRects);
 		scoreIndicator.setmRobot(robot);
+
+		root.getChildren().add(robotImageView);
 
 		primaryStage.setTitle("Simulator");
 		primaryStage.setResizable(false);
@@ -286,7 +282,6 @@ public class Window extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				timer.stop();
-				allSpriteList.clear();
 				primaryStage.hide();
 				openSelectMapPopUp();
 			}
@@ -294,8 +289,7 @@ public class Window extends Application {
 	}
 
 	private void onUpdate(double deltaTime) {
-		for (Sprite sprite : allSpriteList) {
-			sprite.update(deltaTime);
-		}
+		robot.update(deltaTime);
+		scoreIndicator.update(deltaTime);
 	}
 }

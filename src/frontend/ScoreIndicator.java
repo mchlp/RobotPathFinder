@@ -7,11 +7,10 @@
 
 package frontend;
 
-import backend.Sprite;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class ScoreIndicator extends Sprite {
+public class ScoreIndicator {
 
     private static final int FONT_SIZE = 20;
 
@@ -19,8 +18,7 @@ public class ScoreIndicator extends Sprite {
     private Text mText;
 
     public ScoreIndicator(Text text) {
-        super(new Text());
-        mText = (Text) mNode;
+        mText = text;
         mText.setFont(new Font(FONT_SIZE));
     }
 
@@ -28,7 +26,6 @@ public class ScoreIndicator extends Sprite {
         this.mRobot = mRobot;
     }
 
-    @Override
     public void update(double deltaTime) {
         mText.setText("Moves: " + mRobot.getmNumMoves());
     }
