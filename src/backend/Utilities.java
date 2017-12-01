@@ -16,9 +16,6 @@ import java.io.InputStream;
  */
 public final class Utilities {
 
-    // precision for comparing doubles
-    public static final double EPSILON = 1E-5;
-
     // directory where images are stored
     public static final String IMAGE_DIRECTORY = "/images/";
 
