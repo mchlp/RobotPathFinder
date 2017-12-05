@@ -23,6 +23,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -268,51 +270,15 @@ public class Window extends Application {
         root.setPrefWidth(squareSideLength * maze.getWidth());
         root.setPrefHeight(squareSideLength * maze.getHeight());
 
-        // 2D array to store all squares in the maze
-        Rectangle[][] mazeRects = new Rectangle[maze.getWidth()][maze.getHeight()];
+        Canvas canvas = new Canvas(root.getPrefWidth(), root.getPrefHeight());
+        root.getChildren().add(canvas);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        drawGrid(gc, maze, squareSideLength);
 
-        // add Rectangles to maze, each representing one cell
-        for (int col = 0; col < maze.getWidth(); col++) {
-            for (int row = 0; row < maze.getHeight(); row++) {
-
-                // get cell contents
-                Cell curCell = maze.getCell(col, row);
-                Color squareColor = null;
-
-                // set colour of Rectangle
-                switch (curCell) {
-                    case GOAL:
-                        squareColor = Color.RED;
-                        break;
-                    case START:
-                        squareColor = Color.GREEN;
-                        break;
-                    case EMPTY:
-                        squareColor = Color.LIGHTGREY;
-                        break;
-                    case WALL:
-                        squareColor = Color.BLUE;
-                }
-
-                // set up the Rectangle that will represent the cell
-                Rectangle cellRect = new Rectangle();
-                cellRect.setStroke(Color.BLACK);
-                cellRect.setStrokeWidth(1);
-                cellRect.setX(col * squareSideLength);
-                cellRect.setY(row * squareSideLength);
-                cellRect.setWidth(squareSideLength);
-                cellRect.setHeight(squareSideLength);
-                cellRect.setFill(squareColor);
-
-                // add to root pane and array
-                root.getChildren().add(cellRect);
-                mazeRects[col][row] = cellRect;
-            }
-        }
 
         // set up robot
         ImageView robotImageView = new ImageView();
-        robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength, mazeRects);
+        robot = new Robot(robotImageView, path, maze.getStartingPos(), squareSideLength, gc);
         scoreIndicator.setmRobot(robot);
         root.getChildren().add(robotImageView);
 
@@ -364,6 +330,41 @@ public class Window extends Application {
         timer.start();
     }
 
+
+    /**
+     * Draws the squares of each cell onto the canvas
+     */
+    private void drawGrid(GraphicsContext gc, Maze maze, double squareSideLength) {
+
+        gc.setStroke(Color.BLACK);
+
+        for (int col = 0; col < maze.getWidth(); col++) {
+            for (int row = 0; row < maze.getHeight(); row++) {
+
+                // get cell contents
+                Cell curCell = maze.getCell(col, row);
+                Color squareColor = null;
+
+                // set colour of Rectangle
+                switch (curCell) {
+                    case GOAL:
+                        squareColor = Color.RED;
+                        break;
+                    case START:
+                        squareColor = Color.GREEN;
+                        break;
+                    case EMPTY:
+                        squareColor = Color.LIGHTGREY;
+                        break;
+                    case WALL:
+                        squareColor = Color.BLUE;
+                }
+                gc.setFill(squareColor);
+                gc.fillRect(col*squareSideLength, row*squareSideLength, squareSideLength, squareSideLength);
+                gc.strokeRect(col*squareSideLength, row*squareSideLength, squareSideLength, squareSideLength);
+            }
+        }
+    }
 
     /**
      * Run every frame and updates the contents of the screen

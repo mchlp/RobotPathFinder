@@ -13,6 +13,7 @@ import algorithm.Direction;
 import algorithm.Path;
 import backend.Coordinate;
 import backend.Utilities;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -50,12 +51,12 @@ public class Robot {
 	private boolean mDoneMoving = false;
 	// the direction the robot is currently facing (angle, up = 0 degrees, right = 90 degrees, down = 180 degrees, left = 270 degrees)
 	private int mFacingDirection = 0;
-	// array storing the rectangles representing each cell maze
-	private Rectangle[][] mMazeRect;
+	// the graphicsContext for the canvas that the squares are drawn on
+	private GraphicsContext mGraphicsContext;
 	// the number of moves the robot has made
 	private int mNumMoves = 0;
 
-	public Robot(ImageView image, Path path, Point startingPosition, double squareSideLength, Rectangle[][] mazeRect) {
+	public Robot(ImageView image, Path path, Point startingPosition, double squareSideLength, GraphicsContext graphicsContext) {
 
 		// set dimensions for robot image
 		double imageMaxDimension = squareSideLength * 0.8;
@@ -73,7 +74,7 @@ public class Robot {
 
 		// set up member variables
 		mPath = path;
-		mMazeRect = mazeRect;
+        mGraphicsContext = graphicsContext;
 		mPosition = new Coordinate();
 		mSquareSideLength = squareSideLength;
 		mPositionInGraphAfterMove = (Point) startingPosition.clone();
@@ -125,7 +126,11 @@ public class Robot {
 				mPositionBeforeMove = new Coordinate(beforeMoveCentreX, beforeMoveCentreY);
 
 				// set the colour of the previous cell to the visited colour
-				mMazeRect[mPositionInGraphAfterMove.x][mPositionInGraphAfterMove.y].setFill(VISITED_CELL_COLOUR);
+                double movedRectXPos = mPositionInGraphAfterMove.x*mSquareSideLength;
+                double movedRectYPos = mPositionInGraphAfterMove.y*mSquareSideLength;
+                mGraphicsContext.setFill(VISITED_CELL_COLOUR);
+                mGraphicsContext.fillRect(movedRectXPos, movedRectYPos, mSquareSideLength, mSquareSideLength);
+                mGraphicsContext.strokeRect(movedRectXPos, movedRectYPos, mSquareSideLength, mSquareSideLength);
 
 				// if there are still moves left in the path
 				if (mPath.hasNext()) {
