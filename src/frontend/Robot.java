@@ -12,12 +12,10 @@ import java.awt.Point;
 import algorithm.Direction;
 import algorithm.Path;
 import backend.Coordinate;
-import backend.Utilities;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 /**
  * Represents a robot moving around the maze
@@ -25,7 +23,7 @@ import javafx.scene.shape.Rectangle;
 public class Robot {
 
     // location of image of robot
-	private static final String IMAGE_ROBOT = Utilities.IMAGE_DIRECTORY + "robot.png";
+	private static final String IMAGE_ROBOT = "/images/robot.png";
     // amount of time to take for each move (seconds)
 	private static final double MOVE_DURATION = 0.5;
 	// colour of visited cell
@@ -63,7 +61,7 @@ public class Robot {
 
 		// set up imageView of robot
 		mImageView = image;
-		mImageView.setImage(new Image(Utilities.getResourceAsStream(IMAGE_ROBOT)));
+		mImageView.setImage(new Image(IMAGE_ROBOT));
 		mImageView.setPreserveRatio(true);
 		// resize image depending if the width or length of image is larger
 		if (mImageView.getFitWidth() > mImageView.getFitHeight()) {

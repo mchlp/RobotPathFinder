@@ -26,13 +26,13 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -47,6 +47,9 @@ public class Window extends Application {
     // the height of the menu bar on top of the display in pixels
     private static final double SCORE_BAR_HEIGHT = 40;
     private static final double WINDOW_PERCENTAGE_OF_FULL_SCREEN = 0.9;
+
+    // path to application icon
+    private static final String ICON = "/images/icon.png";
 
     // the last time the frame was updated
     private long prevTime;
@@ -84,6 +87,7 @@ public class Window extends Application {
         dialog.setWidth(500);
         dialog.setResizable(false);
         dialog.setAlwaysOnTop(true);
+        dialog.getIcons().add(new Image(ICON));
 
         // set up the pane and scene for the map pop up
         VBox dialogRoot = new VBox(10);
@@ -214,7 +218,7 @@ public class Window extends Application {
                         public void handle(ActionEvent event) {
                             // starts the simulation screen
                             outputConsole.appendText("Opening simulation...");
-                            dialog.hide();
+                            dialog.close();
                             openSimulation(maze, path);
                         }
                     });
@@ -284,6 +288,7 @@ public class Window extends Application {
 
         // set up primary stage
         primaryStage.setTitle("Simulator");
+        primaryStage.getIcons().add(new Image(ICON));
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -321,7 +326,7 @@ public class Window extends Application {
             @Override
             public void handle(ActionEvent event) {
                 timer.stop();
-                primaryStage.hide();
+                primaryStage.close();
                 openSelectMapPopUp();
             }
         });
