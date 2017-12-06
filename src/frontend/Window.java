@@ -57,6 +57,9 @@ public class Window extends Application {
     // the stage the application will be displayed in
     private Stage primaryStage;
 
+    // the pane where the squares and the robot and displayed
+    private Pane root;
+
     // member variables for sprites on screen that need to be updated
     private Robot robot;
     private ScoreIndicator scoreIndicator;
@@ -261,14 +264,15 @@ public class Window extends Application {
         topBar.getChildren().add(scoreIndicatorText);
 
         // set up root pane for displaying simulation
-        Pane root = new Pane();
+        root = new Pane();
         pane.setCenter(root);
 
         // calculate the size of the window and the size of each square
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         double minWindowDimension = Math.min(primaryScreenBounds.getWidth(),
-                primaryScreenBounds.getHeight() - SCORE_BAR_HEIGHT) * WINDOW_PERCENTAGE_OF_FULL_SCREEN;
-        double squareSideLength = minWindowDimension / Math.max(maze.getWidth(), maze.getHeight());
+                primaryScreenBounds.getHeight() - SCORE_BAR_HEIGHT);
+        double windowDimension = minWindowDimension * WINDOW_PERCENTAGE_OF_FULL_SCREEN;
+        double squareSideLength = Math.floor(windowDimension / Math.max(maze.getWidth(), maze.getHeight()));
 
         // set up the size of the root pane using the calculated dimensions
         root.setPrefWidth(squareSideLength * maze.getWidth());
@@ -303,7 +307,7 @@ public class Window extends Application {
                 // calculate the number of seconds that has elapsed since screen was last updated
                 double deltaTime = (curTime - prevTime) / 1E9;
                 // display FPS for debugging
-                System.out.println(1 / deltaTime);
+                // System.out.println(1 / deltaTime);
                 // update the screen
                 onUpdate(deltaTime);
                 // update the prevTime with current time
@@ -377,6 +381,7 @@ public class Window extends Application {
      * @param deltaTime the number of seconds elapsed since the last update
      */
     private void onUpdate(double deltaTime) {
+        System.out.println(root.getHeight() + " " + root.getWidth());
         robot.update(deltaTime);
         scoreIndicator.update(deltaTime);
     }

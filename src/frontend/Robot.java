@@ -96,11 +96,18 @@ public class Robot {
      * @param centrePosition the coordinate representing where the centre of the imageView should be
      */
     private void setCentreOfImage(Coordinate centrePosition) {
-		double width = mImageView.getBoundsInParent().getWidth();
-		double height = mImageView.getBoundsInParent().getHeight();
-		mPosition.setX(centrePosition.getX() - (width / 2));
-		mPosition.setY(centrePosition.getY() - (height / 2));
-		updateImageViewPosition();
+		double imageWidth = mImageView.getBoundsInParent().getWidth();
+		double imageHeight = mImageView.getBoundsInParent().getHeight();
+
+		if (mCurrentDirection == Direction.UP || mCurrentDirection == Direction.DOWN) {
+            mPosition.setX(centrePosition.getX() - (imageWidth / 2));
+            mPosition.setY(centrePosition.getY() - (imageHeight / 2));
+            updateImageViewPosition();
+        } else {
+            mPosition.setX(centrePosition.getX() - (imageHeight / 2));
+            mPosition.setY(centrePosition.getY() - (imageWidth / 2));
+            updateImageViewPosition();
+        }
 	}
 
 	public void update(double deltaTime) {
@@ -122,6 +129,7 @@ public class Robot {
 				double beforeMoveCentreX = mPositionInGraphAfterMove.x * mSquareSideLength + mSquareSideLength / 2.0;
 				double beforeMoveCentreY = mPositionInGraphAfterMove.y * mSquareSideLength + mSquareSideLength / 2.0;
 				mPositionBeforeMove = new Coordinate(beforeMoveCentreX, beforeMoveCentreY);
+				System.out.println(mSquareSideLength + " " + beforeMoveCentreX + " " + beforeMoveCentreY);
 
 				// set the colour of the previous cell to the visited colour
                 double movedRectXPos = mPositionInGraphAfterMove.x*mSquareSideLength;
