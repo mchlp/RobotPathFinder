@@ -381,7 +381,6 @@ public class Window extends Application {
      * @param deltaTime the number of seconds elapsed since the last update
      */
     private void onUpdate(double deltaTime) {
-        System.out.println(root.getHeight() + " " + root.getWidth());
         robot.update(deltaTime);
         scoreIndicator.update(deltaTime);
     }

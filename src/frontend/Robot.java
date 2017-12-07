@@ -129,7 +129,6 @@ public class Robot {
 				double beforeMoveCentreX = mPositionInGraphAfterMove.x * mSquareSideLength + mSquareSideLength / 2.0;
 				double beforeMoveCentreY = mPositionInGraphAfterMove.y * mSquareSideLength + mSquareSideLength / 2.0;
 				mPositionBeforeMove = new Coordinate(beforeMoveCentreX, beforeMoveCentreY);
-				System.out.println(mSquareSideLength + " " + beforeMoveCentreX + " " + beforeMoveCentreY);
 
 				// set the colour of the previous cell to the visited colour
                 double movedRectXPos = mPositionInGraphAfterMove.x*mSquareSideLength;
