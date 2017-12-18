@@ -1,15 +1,21 @@
 # RobotPathFinder
-Arrays Assignment for ICS3U1<br>
-Michael Pu - December 2017<br>
-Mr. Radulovic - Don Mills Collegiate Institute<br>
-Work log can be found in the commit history here: https://github.com/mchlp/RobotPathFinder
-
-
+**Arrays Assignment for ICS3U1<br>**
+_Michael Pu - December 2017<br>
+Mr. Radulovic - Don Mills Collegiate Institute<br>_
+Work log can be found in the commit history of this [GitHub repository](https://github.com/mchlp/RobotPathFinder)
 
 ## Description
 - Reads and parses a map file into 2D array format
 - Computes the shortest path from the starting position to the goal
 - Displays the map and animates the shortest path
+
+## Project Organization
+Package                          | Description
+---                              | ---
+[algorithm](src/algorithm)       | files related to calculating the shortest path in the maze
+[backend](src/backend)           | files related to the processing and calculations that is not part of the algorithm
+[frontend](src/frontend)         | files related to the JavaFX components displayed on screen
+[tests](src/tests)               | test cases files and JUnit test files for the algorithm
 
 ## Features
 - Application icon
