@@ -23,16 +23,6 @@ public class Maze {
 	// goal position
 	private Point endingPos;
 
-	/**
-	 * @param width
-	 *            width of maze
-	 * @param height
-	 *            height of maze
-	 */
-	public Maze(int width, int height) {
-		mMaze = new Cell[width][height];
-	}
-
 	public Maze(String mapData) throws InvalidMazeException {
 
 		boolean foundStart = false;
