@@ -1,6 +1,10 @@
 # RobotPathFinder
-Arrays Assignment for ICS3U1
+Arrays Assignment for ICS3U1<br>
+Michael Pu - December 2017<br>
+Mr. Radulovic - Don Mills Collegiate Institute<br>
 Work log can be found in the commit history here: https://github.com/mchlp/RobotPathFinder
+
+
 
 ## Description
 - Reads and parses a map file into 2D array format
