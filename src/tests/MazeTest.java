@@ -25,12 +25,12 @@ public class MazeTest {
 
         String testFile = null;
         try {
-            testFile = new String(Files.readAllBytes(new File("test.txt").toPath()), "UTF-8");
+            testFile = new String(Files.readAllBytes(new File("src/tests/test.txt").toPath()), "UTF-8");
             assertEquals(testFile,
                     "0 0 0 0 0 0 0 0 0 0\n" + "0 0 1 1 1 1 1 1 1 R\n" + "0 0 1 1 0 0 1 0 1 0\n"
                             + "0 0 0 1 0 0 1 0 1 0\n" + "0 0 1 1 1 1 1 0 1 0\n" + "0 1 1 0 0 1 0 0 1 0\n"
                             + "0 0 1 0 0 1 1 1 1 0\n" + "0 G 0 0 0 1 0 0 1 0\n" + "0 1 0 0 1 1 1 1 1 0\n"
-                            + "0 1 1 1 1 1 1 0 0 0\n" + "0 1 1 1 1 1 1 0 0 0\n");
+                            + "0 1 1 1 1 1 1 0 0 0\n" + "0 1 1 1 1 1 1 0 0 0");
             Maze maze = new Maze(testFile);
             assertEquals(maze.getHeight(), 11);
             assertEquals(maze.getWidth(), 10);
@@ -71,7 +71,7 @@ public class MazeTest {
         String testFile = null;
         Path path = null;
         try {
-            testFile = new String(Files.readAllBytes(new File("test.txt").toPath()), "UTF-8");
+            testFile = new String(Files.readAllBytes(new File("src/tests/test.txt").toPath()), "UTF-8");
             Maze maze = new Maze(testFile);
             path = maze.solveMaze();
         } catch (IOException e) {

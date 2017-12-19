@@ -142,8 +142,8 @@ public class Robot {
 				    // get the next move from the path
 					mCurrentDirection = mPath.getNext();
 					// set the position of of the robot in the graph after this move
-					mPositionInGraphAfterMove.x += mCurrentDirection.change.x;
-					mPositionInGraphAfterMove.y += mCurrentDirection.change.y;
+					mPositionInGraphAfterMove.x += mCurrentDirection.change.getX();
+					mPositionInGraphAfterMove.y += mCurrentDirection.change.getY();
 					// rotate the robot to face the direction it is moving
 					int imageRotateAmount = mFacingDirection - mCurrentDirection.direction;
 					mImageView.setRotate(imageRotateAmount);
@@ -157,8 +157,8 @@ public class Robot {
 			}
 
 			// calculate the distance the robot is away from its last cell according to the amount of time that has elapsed since the beginning of the last move
-			double offsetX = mCurrentDirection.change.x * mSquareSideLength * (mMoveCountdown / MOVE_DURATION);
-			double offsetY = mCurrentDirection.change.y * mSquareSideLength * (mMoveCountdown / MOVE_DURATION);
+			double offsetX = mCurrentDirection.change.getX() * mSquareSideLength * (mMoveCountdown / MOVE_DURATION);
+			double offsetY = mCurrentDirection.change.getY() * mSquareSideLength * (mMoveCountdown / MOVE_DURATION);
 
 			// calculate and set the new centre position of the image using the offset calculated earlier
 			Coordinate newCentre = new Coordinate(mPositionBeforeMove.getX() + offsetX,

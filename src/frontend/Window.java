@@ -44,6 +44,9 @@ import javafx.stage.Stage;
  */
 public class Window extends Application {
 
+    // the width of the file select dialog
+    private static final int DIALOG_WIDTH = 500;
+
     // the height of the menu bar on top of the display in pixels
     private static final double SCORE_BAR_HEIGHT = 40;
     private static final double WINDOW_PERCENTAGE_OF_FULL_SCREEN = 0.9;
@@ -87,7 +90,7 @@ public class Window extends Application {
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(primaryStage);
         dialog.setTitle("Select a Map");
-        dialog.setWidth(500);
+        dialog.setWidth(DIALOG_WIDTH);
         dialog.setResizable(false);
         dialog.setAlwaysOnTop(true);
         dialog.getIcons().add(new Image(ICON));
