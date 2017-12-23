@@ -167,7 +167,7 @@ public class Maze {
 		 */
 
         // queue to keep track of path
-        ArrayDeque<Point> queue = new ArrayDeque<>();
+        PointQueue queue = new PointQueue();
 
         // push starting point into queue
         Point startPoint = getStartingPos();
@@ -184,7 +184,7 @@ public class Maze {
         while (!queue.isEmpty()) {
 
             // pop point from queue to explore next
-            Point curPoint = queue.removeFirst();
+            Point curPoint = queue.pop();
 
             // if the current point is the goal
             if (getCell(curPoint.x, curPoint.y) == Cell.GOAL) {
@@ -214,7 +214,7 @@ public class Maze {
                 parentArray[newX][newY] = new Move(direction, curPoint);
 
                 // add point to end of queue
-                queue.addLast(new Point(newX, newY));
+                queue.push(new Point(newX, newY));
             }
         }
 
