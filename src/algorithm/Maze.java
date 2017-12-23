@@ -20,7 +20,7 @@ public class Maze {
 	private static final String EMPTY_CHAR = "1";
 	private static final String START_CHAR = "R";
 	private static final String GOAL_CHAR = "G";
-	// regex expression for the separtor character between each cell in the maze
+	// regex expression for the separator character between each cell in the maze
 	private static final String SEPARATOR_CHAR = "[ \t]+";
 
 	// 2D array representing cells in maze
