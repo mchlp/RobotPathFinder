@@ -1,6 +1,6 @@
 /*
  * Michael Pu
- * RobotPathFinder - Queue
+ * RobotPathFinder - PointQueue
  * ICS3U1 - Mr. Radulovic
  * December 22, 2017
  */
