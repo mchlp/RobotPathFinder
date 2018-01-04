@@ -18,7 +18,7 @@ import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
 
-public class MazeTest {
+public class AlgorithmTest {
 
     @Test
     public void testParser() throws InvalidMazeException {
