@@ -35,4 +35,6 @@ Cell Contents   | Meaning
 R               | Starting Position
 G               | Goal Position
 
+Each character in the map should be separated with a whitespace character with a new line separating each row.
+
 
