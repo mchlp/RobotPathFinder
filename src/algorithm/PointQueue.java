@@ -62,7 +62,7 @@ public class PointQueue {
     // resizes the array when it is out of space
     private void updateSize() {
         // get size of the new array
-        Point[] newArr = new Point[(lastIndex-startIndex)*UPDATE_SIZE_TIMES];
+        Point[] newArr = new Point[Math.max((lastIndex-startIndex)*UPDATE_SIZE_TIMES, INITIAL_SIZE)];
         // copy old array to new array
         for (int i=0; i<lastIndex-startIndex; i++) {
             newArr[i] = arr[startIndex+i];
