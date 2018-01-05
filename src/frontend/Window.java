@@ -7,10 +7,6 @@
 
 package frontend;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 import algorithm.Cell;
 import algorithm.InvalidMazeException;
 import algorithm.Maze;
@@ -26,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -39,13 +36,22 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 /**
- * JavaFX Application to be displayed to user
+ * JavaFX Application to be displayed to user.
  */
 public class Window extends Application {
 
     // the width of the file select dialog
     private static final int DIALOG_WIDTH = 500;
+
+    // format to display timestamp
+    private static final SimpleDateFormat TIME_STAMP = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS a\n");
 
     // the height of the menu bar on top of the display in pixels
     private static final double SCORE_BAR_HEIGHT = 40;
@@ -60,10 +66,7 @@ public class Window extends Application {
     // the stage the application will be displayed in
     private Stage primaryStage;
 
-    // the pane where the squares and the robot and displayed
-    private Pane root;
-
-    // member variables for sprites on screen that need to be updated
+    // member variables for elements on screen that need to be updated
     private Robot robot;
     private ScoreIndicator scoreIndicator;
 
@@ -79,7 +82,7 @@ public class Window extends Application {
     }
 
     /**
-     * Opens up the map select window for the user to select a map and to process the selected map
+     * Opens up the map select window for the user to select a map and to process the selected map.
      */
     private void openSelectMapPopUp() {
 
@@ -111,11 +114,11 @@ public class Window extends Application {
         fileChooser.setTitle("Open Map File");
 
         // set up the output console
-        OutputConsole outputConsole = new OutputConsole();
+        TextArea outputConsole = new TextArea();
         outputConsole.setPrefHeight(300);
         outputConsole.setEditable(false);
         outputConsole.setWrapText(true);
-        outputConsole.setInitalText("Please choose a map file to use.");
+        outputConsole.setText(getTextWithTimeStamp("Please choose a map file to use.", true));
 
         // set up HBox for buttons
         HBox buttons = new HBox(10);
@@ -153,7 +156,7 @@ public class Window extends Application {
                 // get a file from the file chooser dialog
                 File mazeFile = fileChooser.showOpenDialog(dialog);
 
-                // if a file was not chosen, exit the method
+                // if no file was chosen, stop and return
                 if (mazeFile == null) {
                     return;
                 }
@@ -164,9 +167,9 @@ public class Window extends Application {
 
                 // update output console text
                 try {
-                    outputConsole.appendText("Reading file: " + mazeFile.getCanonicalPath());
+                    outputConsole.appendText(getTextWithTimeStamp("Reading file: " + mazeFile.getCanonicalPath(), false));
                 } catch (IOException e) {
-                    outputConsole.appendText(e.toString() + "\nInvalid file. Please select another file");
+                    outputConsole.appendText(getTextWithTimeStamp(e.toString() + "\nInvalid file. Please select another file", false));
                     fileText.setFill(Color.RED);
                     startSimulationButton.setDisable(true);
                     return;
@@ -180,40 +183,41 @@ public class Window extends Application {
                     maze = new Maze(contents);
                 } catch (InvalidMazeException e) {
                     // if an invalid maze file was read
-                    outputConsole.appendText(e.toString() + "\nInvalid maze file. Please select another file.");
+                    outputConsole.appendText(getTextWithTimeStamp(e.toString() + "\nInvalid maze file. Please select another file.", false));
                     fileText.setFill(Color.RED);
                     startSimulationButton.setDisable(true);
                     return;
                 } catch (IOException e) {
                     // if the maze file could not be accessed
-                    outputConsole.appendText(e.toString() + "\nInvalid path to maze file. Please select another file");
+                    outputConsole.appendText(getTextWithTimeStamp(e.toString() + "\nInvalid path to maze file. Please select another file", false));
                     fileText.setFill(Color.RED);
                     startSimulationButton.setDisable(true);
                     return;
                 }
 
                 // when the maze has been successfully loaded and validated
-                outputConsole.appendText("Successfully read and parsed the maze file.");
+                outputConsole.appendText(getTextWithTimeStamp("Successfully read and parsed the maze file.", false));
                 fileText.setFill(Color.GREEN);
-                outputConsole.appendText("Attempting to find shortest path in maze...");
+                outputConsole.appendText(getTextWithTimeStamp("Attempting to find shortest path in maze...", false));
 
-                // start finding shortest path in the maze
+                // keeps track of when the path finding was started
                 long startFindPath = System.nanoTime();
+
+                //find the shortest path in the maze
                 Path path = maze.solveMaze();
 
                 if (path == null) {
                     // if no path from start point to goal was found
-                    outputConsole.appendText("No path found. Please select another maze.");
+                    outputConsole.appendText(getTextWithTimeStamp("No path found. Please select another maze.", false));
                     fileText.setFill(Color.RED);
                     startSimulationButton.setDisable(true);
 
                 } else {
-
                     // if a path was found
                     // calculate the time used to compute the shortest path
                     double findPathTime = (System.nanoTime() - startFindPath) / 1E6;
                     String findPathString = String.format("%.4f milliseconds", findPathTime);
-                    outputConsole.appendText("Path found in " + findPathString + ". Ready for simulation.");
+                    outputConsole.appendText(getTextWithTimeStamp("Path found in " + findPathString + ". Ready for simulation.", false));
 
                     // enable start simulation button
                     startSimulationButton.setDisable(false);
@@ -223,7 +227,7 @@ public class Window extends Application {
                         @Override
                         public void handle(ActionEvent event) {
                             // starts the simulation screen
-                            outputConsole.appendText("Opening simulation...");
+                            outputConsole.appendText(getTextWithTimeStamp("Opening simulation...", false));
                             dialog.close();
                             openSimulation(maze, path);
                         }
@@ -236,7 +240,8 @@ public class Window extends Application {
     }
 
     /**
-     * Opens up the simulation window to show a robot moving through the maze from the starting point to the goal point using the shortest path
+     * Opens up the simulation window to show a robot moving through the maze from the starting point to the goal point
+     * using the shortest path.
      *
      * @param maze the maze to be displayed
      * @param path the shortest path from the starting point to the goal point
@@ -247,7 +252,7 @@ public class Window extends Application {
         BorderPane pane = new BorderPane();
         Scene scene = new Scene(pane);
 
-        // set up HBox for display score and buttons (above root pane)
+        // set up HBox for display score and buttons in the menu bar (above root pane)
         HBox topBar = new HBox(5);
         topBar.setPadding(new Insets(0, 5, 0, 5));
         topBar.setPrefHeight(SCORE_BAR_HEIGHT);
@@ -267,20 +272,27 @@ public class Window extends Application {
         topBar.getChildren().add(scoreIndicatorText);
 
         // set up root pane for displaying simulation
-        root = new Pane();
+        Pane root = new Pane();
         pane.setCenter(root);
 
-        // calculate the size of the window and the size of each square
+        /* calculate the size of the window and the size of each square */
+
+        // gets the minimum dimension of the screen
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         double minWindowDimension = Math.min(primaryScreenBounds.getWidth(),
                 primaryScreenBounds.getHeight() - SCORE_BAR_HEIGHT);
+
+        // calculates the dimension of the window based on the smallest dimension
         double windowDimension = minWindowDimension * WINDOW_PERCENTAGE_OF_FULL_SCREEN;
+
+        // calculates the dimensions of each cell in the map
         double squareSideLength = Math.floor(windowDimension / Math.max(maze.getWidth(), maze.getHeight()));
 
         // set up the size of the root pane using the calculated dimensions
         root.setPrefWidth(squareSideLength * maze.getWidth());
         root.setPrefHeight(squareSideLength * maze.getHeight());
 
+        // set up canvas and add to the root
         Canvas canvas = new Canvas(root.getPrefWidth(), root.getPrefHeight());
         root.getChildren().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -309,10 +321,13 @@ public class Window extends Application {
             public void handle(long curTime) {
                 // calculate the number of seconds that has elapsed since screen was last updated
                 double deltaTime = (curTime - prevTime) / 1E9;
+
                 // display FPS for debugging
                 // System.out.println(1 / deltaTime);
+
                 // update the screen
                 onUpdate(deltaTime);
+
                 // update the prevTime with current time
                 prevTime = curTime;
             }
@@ -371,9 +386,11 @@ public class Window extends Application {
                     case WALL:
                         squareColor = Color.BLUE;
                 }
+
+                // draw on the canvas
                 gc.setFill(squareColor);
-                gc.fillRect(col*squareSideLength, row*squareSideLength, squareSideLength, squareSideLength);
-                gc.strokeRect(col*squareSideLength, row*squareSideLength, squareSideLength, squareSideLength);
+                gc.fillRect(col * squareSideLength, row * squareSideLength, squareSideLength, squareSideLength);
+                gc.strokeRect(col * squareSideLength, row * squareSideLength, squareSideLength, squareSideLength);
             }
         }
     }
@@ -387,5 +404,21 @@ public class Window extends Application {
         //System.out.println(1/deltaTime);
         robot.update(deltaTime);
         scoreIndicator.update(deltaTime);
+    }
+
+    /**
+     * Takes a string of text and adds a timestamp in front of it and formats it to be displayed in a {@link TextArea}.
+     *
+     * @param text      The text to display.
+     * @param firstLine If this is the first line in the {@link TextArea}.
+     * @return The formatted string with a timestamp.
+     */
+    private String getTextWithTimeStamp(String text, boolean firstLine) {
+        String timeStamp = TIME_STAMP.format(new Timestamp(System.currentTimeMillis()));
+        if (firstLine) {
+            return (timeStamp + text);
+        } else {
+            return ("\n-\n" + timeStamp + text);
+        }
     }
 }

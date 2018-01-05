@@ -18,7 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 /**
- * Represents a robot moving around the maze
+ * Represents a robot moving around the maze.
  */
 public class Robot {
 
@@ -63,6 +63,7 @@ public class Robot {
 		mImageView = image;
 		mImageView.setImage(new Image(IMAGE_ROBOT));
 		mImageView.setPreserveRatio(true);
+		
 		// resize image depending if the width or length of image is larger
 		if (mImageView.getFitWidth() > mImageView.getFitHeight()) {
 			mImageView.setFitWidth(imageMaxDimension);
