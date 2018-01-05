@@ -2,7 +2,7 @@
  * Michael Pu
  * RobotPathFinder - Move
  * ICS3U1 - Mr. Radulovic
- * November 27, 2017
+ * January 05, 2018
  */
 
 package algorithm;
@@ -10,7 +10,7 @@ package algorithm;
 import java.awt.*;
 
 /**
- * Represents a move with a direction and the ending position
+ * Represents a move with a direction and the originating position
  */
 public class Move {
 

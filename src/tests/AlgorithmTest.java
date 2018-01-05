@@ -1,8 +1,8 @@
 /*
  * Michael Pu
- * RobotPathFinder - MazeTest
+ * RobotPathFinder - AlgorithmTest
  * ICS3U1 - Mr. Radulovic
- * December 22, 2017
+ * January 04, 2018
  */
 
 package tests;

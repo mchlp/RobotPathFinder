@@ -2,7 +2,7 @@
  * Michael Pu
  * RobotPathFinder - InvalidMazeException
  * ICS3U1 - Mr. Radulovic
- * December 22, 2017
+ * January 04, 2018
  */
 
 package algorithm;

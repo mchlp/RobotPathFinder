@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 /**
- * A {@link TextArea} with timestamps to display output of a program
+ * A {@link TextArea} with timestamps to display output of a program.
  */
 public class OutputConsole extends TextArea {
 
@@ -25,9 +25,9 @@ public class OutputConsole extends TextArea {
     }
 
     /**
-     * Adds text to bottom of the existing text with timestamp
+     * Adds text to bottom of the existing text with timestamp.
      *
-     * @param text text to add
+     * @param text Text to add.
      */
     @Override
     public void appendText(String text) {
@@ -36,9 +36,9 @@ public class OutputConsole extends TextArea {
     }
 
     /**
-     * Sets the first line of text with timestamp
+     * Sets the first line of text with timestamp.
      *
-     * @param text first line of text to add
+     * @param text First line of text to add.
      */
     public void setInitalText(String text) {
         String timeStamp = TIME_STAMP.format(new Timestamp(System.currentTimeMillis()));

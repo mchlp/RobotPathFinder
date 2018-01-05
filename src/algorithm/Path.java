@@ -2,7 +2,7 @@
  * Michael Pu
  * RobotPathFinder - Path
  * ICS3U1 - Mr. Radulovic
- * November 27, 2017
+ * January 05, 2018
  */
 
 package algorithm;
@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 /**
- * Represents a path from the starting point to the goal point using a list of turns
+ * Represents a path from the starting point to the goal point using a list of turns.
  */
 public class Path {
 
@@ -27,7 +27,7 @@ public class Path {
     }
 
     /**
-     * Adds a direction to the end of the path
+     * Adds a direction to the end of the path.
      *
      * @param direction {@link Direction} to add
      */
@@ -36,7 +36,7 @@ public class Path {
     }
 
     /**
-     * Reverses the path and creates an iterator for the finalized path
+     * Reverses the path and creates an iterator for the finalized path.
      */
     public void reverseAndFinalize() {
         Collections.reverse(mPath);
@@ -44,23 +44,23 @@ public class Path {
     }
 
     /**
-     * Gets the next direction to proceed in
+     * Gets the next direction to proceed in.
      *
-     * @return Next direction in the path
+     * @return Next direction in the path.
      */
     public Direction getNext() {
         return mIterator.next();
     }
 
     /**
-     * @return If there are any moves left in the path
+     * @return If there are any moves left in the path.
      */
     public boolean hasNext() {
         return mIterator.hasNext();
     }
 
     /**
-     * Resets the iterator of the path to the beginning (starting point)
+     * Resets the iterator of the path to the beginning (starting point).
      */
     public void resetIterator() {
         mIterator = mPath.iterator();
