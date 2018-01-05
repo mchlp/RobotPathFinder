@@ -63,7 +63,7 @@ public class Robot {
 		mImageView = image;
 		mImageView.setImage(new Image(IMAGE_ROBOT));
 		mImageView.setPreserveRatio(true);
-		
+
 		// resize image depending if the width or length of image is larger
 		if (mImageView.getFitWidth() > mImageView.getFitHeight()) {
 			mImageView.setFitWidth(imageMaxDimension);
