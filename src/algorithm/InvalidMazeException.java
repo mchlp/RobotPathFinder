@@ -8,7 +8,7 @@
 package algorithm;
 
 /**
- * Exception thrown when an invalid map is loaded
+ * Exception thrown when an invalid map is loaded.
  */
 public class InvalidMazeException extends Exception {
     public InvalidMazeException(String message) {

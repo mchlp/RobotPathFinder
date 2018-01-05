@@ -10,7 +10,7 @@ package algorithm;
 import javafx.geometry.Point2D;
 
 /**
- * Represents the four possible directions of movement with their respective changes in the x and y position and their angle
+ * Represents the four possible directions of movement with their respective changes in the x and y position and their angle.
  */
 public enum Direction {
 

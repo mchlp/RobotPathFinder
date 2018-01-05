@@ -11,7 +11,7 @@ import java.awt.Point;
 
 /**
  * Represents a maze, including the content of each cell, the starting point,
- * and the ending point
+ * and the ending point.
  */
 public class Maze {
 
@@ -20,8 +20,12 @@ public class Maze {
 	private static final String EMPTY_CHAR = "1";
 	private static final String START_CHAR = "R";
 	private static final String GOAL_CHAR = "G";
+
 	// regex expression for the separator character between each cell in the maze
-	private static final String SEPARATOR_CHAR = "[ \t]+";
+	private static final String CELL_SEPARATOR_CHAR = "\\s";
+
+    // regex expression for the separator character between each row in the maze
+    private static final String ROW_SEPARATOR_CHAR = "\n";
 
 	// 2D array representing cells in maze
 	private Cell[][] mMaze;
@@ -30,15 +34,26 @@ public class Maze {
 	// goal position
 	private Point endingPos;
 
-	public Maze(String mapData) throws InvalidMazeException {
+    /**
+     * Creates a map object from a string of map data.
+     *
+     * @param mapData The string of data representing the map.
+     * @throws InvalidMazeException If there is an error parsing the map.
+     */
+    public Maze(String mapData) throws InvalidMazeException {
 
-		boolean foundStart = false;
-		boolean foundGoal = false;
+        // splits the map data into rows
+		String[] allData = mapData.trim().split(ROW_SEPARATOR_CHAR);
 
-		String[] allData = mapData.trim().split("\n");
+		// flags to ensure that only one start and goal cell is in the map
+        boolean foundStart = false;
+        boolean foundGoal = false;
 
+        // loops through all the rows
 		for (int row = 0; row < allData.length; row++) {
-			String[] rowData = allData[row].split(SEPARATOR_CHAR);
+
+		    // splits the row data into columns
+			String[] rowData = allData[row].split(CELL_SEPARATOR_CHAR);
 
 			if (row == 0) {
 				mMaze = new Cell[rowData.length][allData.length];
