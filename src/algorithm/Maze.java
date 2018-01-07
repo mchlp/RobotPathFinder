@@ -55,7 +55,7 @@ public class Maze {
 		for (int row = 0; row < allData.length; row++) {
 
 			// splits the row data into columns
-			String[] rowData = allData[row].split(CELL_SEPARATOR_CHAR);
+			String[] rowData = allData[row].trim().split(CELL_SEPARATOR_CHAR);
 
 			// if this is the first row, initialize the array to store the maze
 			if (row == 0) {

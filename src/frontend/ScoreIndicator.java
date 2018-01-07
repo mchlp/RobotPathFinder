@@ -37,10 +37,8 @@ public class ScoreIndicator {
 
     /**
      * Updates the score (the number of moves made) of the robot
-     *
-     * @param deltaTime the amount of time passed since the last update
      */
-    public void update(double deltaTime) {
+    public void update() {
         mText.setText("Moves: " + mRobot.getmNumMoves());
     }
 

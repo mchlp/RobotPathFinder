@@ -403,7 +403,7 @@ public class Window extends Application {
     private void onUpdate(double deltaTime) {
         //System.out.println(1/deltaTime);
         robot.update(deltaTime);
-        scoreIndicator.update(deltaTime);
+        scoreIndicator.update();
     }
 
     /**
