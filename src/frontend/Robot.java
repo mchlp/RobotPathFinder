@@ -78,11 +78,11 @@ public class Robot {
 		mSquareSideLength = squareSideLength;
 		mPositionInGraphAfterMove = (Point) startingPosition.clone();
 
-		// set inital position of the robot
+		// sets initial position of the robot
 		setCentreOfImage(new Coordinate(startingPosition.x * mSquareSideLength + mSquareSideLength / 2.0,
 				startingPosition.y * mSquareSideLength + mSquareSideLength / 2.0));
 
-		// update the imageView if the robot
+		// update the imageView of the robot
 		updateImageViewPosition();
 	}
 
@@ -97,18 +97,21 @@ public class Robot {
      * @param centrePosition the coordinate representing where the centre of the imageView should be
      */
     private void setCentreOfImage(Coordinate centrePosition) {
+
+        // get the current width and height of the image
 		double imageWidth = mImageView.getBoundsInParent().getWidth();
 		double imageHeight = mImageView.getBoundsInParent().getHeight();
 
+		// depending on the direction the robot is facing, the centre point of the robot
+        // will be different as the dimensions retrieved earlier are of the original unrotated image
 		if (mCurrentDirection == Direction.UP || mCurrentDirection == Direction.DOWN) {
             mPosition.setX(centrePosition.getX() - (imageWidth / 2));
             mPosition.setY(centrePosition.getY() - (imageHeight / 2));
-            updateImageViewPosition();
         } else {
             mPosition.setX(centrePosition.getX() - (imageHeight / 2));
             mPosition.setY(centrePosition.getY() - (imageWidth / 2));
-            updateImageViewPosition();
         }
+        updateImageViewPosition();
 	}
 
 	public void update(double deltaTime) {

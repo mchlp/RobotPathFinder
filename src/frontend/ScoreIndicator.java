@@ -18,7 +18,10 @@ public class ScoreIndicator {
     // size of the font to display the score
     private static final int FONT_SIZE = 20;
 
+    // robot to display the score of
     private Robot mRobot;
+
+    // the Text in the window that will display the score
     private Text mText;
 
     public ScoreIndicator(Text text) {
