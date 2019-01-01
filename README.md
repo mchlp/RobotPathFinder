@@ -1,7 +1,7 @@
 # RobotPathFinder
 **Arrays Assignment for ICS3U1<br>**
 _Michael Pu - December 2017<br>
-Mr. Radulovic - Don Mills Collegiate Institute<br>_
+Don Mills Collegiate Institute<br>_
 Work log can be found in the commit history of this [GitHub repository](https://github.com/mchlp/RobotPathFinder)
 
 **_Note: If you are reading a PDF version of this README file, some of the links may not work properly. The same README file with working links can be found in the GitHub repository above._**
